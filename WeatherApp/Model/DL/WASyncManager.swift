@@ -23,7 +23,7 @@ class WASyncManager: NSObject {
                 switch response.result{
                 case .success(let value):
                     
-                    print("Did get data from server. Data is:\n\(JSON(value))")
+                    //print("Did get data from server. Data is:\n\(JSON(value))")
                     
                     let json = JSON(value)
                     
