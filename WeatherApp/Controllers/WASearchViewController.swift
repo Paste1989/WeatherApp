@@ -8,8 +8,11 @@
 
 import UIKit
 import IQKeyboardManagerSwift
+import CoreLocation
 
-class WASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class WASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, CLLocationManagerDelegate {
+    
+    let locationManager = CLLocationManager()
     
     static var searchTerm: String!
     
@@ -47,6 +50,12 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
         
         searchTableView.delegate = self
         searchTableView.dataSource = self
+        
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
         
         //        headerImageView.image = getHeaderImage
         //        bodyImageView.image = getBodyImage
@@ -113,6 +122,11 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
     public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) 
     {
       
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let locValue:CLLocationCoordinate2D = manager.location!.coordinate
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
     }
     
 

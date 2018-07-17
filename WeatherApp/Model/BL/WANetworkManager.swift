@@ -13,7 +13,7 @@ import SwiftyJSON
 
 var baseURL: String = "https://api.darksky.net/forecast/a37b2331d675e600a19a4f676c1a538b/37.8267,-122.4233"
 
-var geoURL: String = "http://api.geonames.org/findNearbyPlaceNameJSON?lat=53.4774&lng=-2.2381&username=paste1989"
+var geoURL: String = "http://api.geonames.org/findNearbyPlaceNameJSON?lat=45.6627063274732&lng=18.4225681907171&username=paste1989"
 
 
 struct WeatherNetworkManager {
