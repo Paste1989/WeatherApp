@@ -92,18 +92,6 @@ extension UITextField {
     }
 }
 
-
-extension Int {
-    func convertToCelsius(fahrenheit: Int) -> Int {
-        return Int(5.0 / 9.0 * (Double(fahrenheit) - 32.0))
-    }
-    
-    func convertToFahrenheit(temperature: Double) -> Double {
-        let fahrenheitTemperature = temperature * 9 / 5 + 32
-        return fahrenheitTemperature
-    }
-}
-
 //ScrollView
 extension UIScrollView {
     
@@ -115,5 +103,33 @@ extension UIScrollView {
     func scrollToBottom() {
         let bottomOffset = CGPoint(x: 0, y: contentSize.height - bounds.size.height + contentInset.bottom)
         setContentOffset(bottomOffset, animated: true)
+    }
+}
+
+//CALayer
+extension CALayer {
+    public func configureGradientBackground(_ colors:CGColor...){
+        
+        let gradient = CAGradientLayer()
+        
+        let maxWidth = max(self.bounds.size.height,self.bounds.size.width)
+        let squareFrame = CGRect(origin: self.bounds.origin, size: CGSize(width: maxWidth, height: maxWidth))
+        gradient.frame = squareFrame
+        
+        gradient.colors = colors
+        
+        self.insertSublayer(gradient, at: 0)
+    }
+}
+
+//Color
+extension UIColor {
+    convenience init(hex: Int) {
+        let components = (
+            R: CGFloat((hex >> 16) & 0xff) / 255,
+            G: CGFloat((hex >> 08) & 0xff) / 255,
+            B: CGFloat((hex >> 00) & 0xff) / 255
+        )
+        self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
     }
 }

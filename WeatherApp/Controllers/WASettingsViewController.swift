@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol WASettingsViewControllerDelegate: class {
+    func addImage(image: UIImage)
+}
+
 class WASettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
@@ -15,11 +19,14 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     var getBodyImage: UIImage!
     var getSkyColorImage: UIImage!
     
-    var humidityPressed: Bool!
-    var windPressed: Bool!
-    var pressurePressed: Bool!
-    var metricPressed: Bool!
-    var imperialPressed: Bool!
+    weak var delegate : WASettingsViewControllerDelegate?
+    
+    static var humidityPressed: Bool!
+    static var windPressed: Bool!
+    static var pressurePressed: Bool!
+    static var metricPressed: Bool!
+    static var imperialPressed: Bool!
+    
     
     //MARK: - Outlets
     @IBOutlet weak var settingsTableView: UITableView!
@@ -33,104 +40,98 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var doneButton: UIButton!
     
     
-    @IBOutlet weak var skyColorImageView: UIImageView!
+    @IBOutlet weak var skyImageView: UIImageView!
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var bodyImageView: UIImageView!
-    
     
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        settingsTableView.delegate = self
-        settingsTableView.dataSource = self
         
-        pressurePressed = true
-        windPressed = true
-        humidityPressed = true
+        self.settingsTableView.delegate = self
+        self.settingsTableView.dataSource = self
         
-
-        
-        headerImageView.image = getHeaderImage
-        bodyImageView.image = getBodyImage
-        skyColorImageView.image = getSkyColorImage
-
+        DispatchQueue.main.async {
+            self.headerImageView.image = self.getHeaderImage
+            self.bodyImageView.image = self.getBodyImage
+            self.skyImageView.image = self.getSkyColorImage
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         navigationController?.navigationBar.isHidden = true
         
-        if UserDefaults.standard.bool(forKey: "pressure") == false {
-            pressurePressed = false
-            let uncheckImage = UIImage(named: "checkmark_uncheck")
+        if UserDefaults.standard.bool(forKey: "pressure") == true {
+            WASettingsViewController.pressurePressed = true
+            let uncheckImage = UIImage(named: "checkmark_check")
             pressureButton.setImage(uncheckImage, for: .normal)
         }
         else {
-             pressurePressed = true
-            let checkImage = UIImage(named: "checkmark_check")
+            WASettingsViewController.pressurePressed = false
+            let checkImage = UIImage(named: "checkmark_uncheck")
             pressureButton.setImage(checkImage, for: .normal)
         }
-    
-        
+
         if UserDefaults.standard.bool(forKey: "wind") == false {
-            windPressed = false
+            WASettingsViewController.windPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
             windButton.setImage(uncheckImage, for: .normal)
         }
         else {
-            windPressed = true
+            WASettingsViewController.windPressed = true
             let checkImage = UIImage(named: "checkmark_check")
             windButton.setImage(checkImage, for: .normal)
         }
         
 
         if UserDefaults.standard.bool(forKey: "humidity") == false {
-            humidityPressed = false
+            WASettingsViewController.humidityPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
             humidityButton.setImage(uncheckImage, for: .normal)
         }
         else {
-            humidityPressed = true
+            WASettingsViewController.humidityPressed = true
             let checkImage = UIImage(named: "checkmark_check")
             humidityButton.setImage(checkImage, for: .normal)
         }
         
         
         if UserDefaults.standard.bool(forKey: "metric") == false {
-            metricPressed = false
+            WASettingsViewController.metricPressed = false
             let uncheckImage = UIImage(named: "square_checkmark_uncheck")
             metricButton.setImage(uncheckImage, for: .normal)
              
-            UserDefaults.standard.set(true, forKey: "imperial")
+            UserDefaults.standard.set(false, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
         else {
-            metricPressed = true
+            WASettingsViewController.metricPressed = true
             let checkImage = UIImage(named: "square_checkmark_check")
             metricButton.setImage(checkImage, for: .normal)
             
-            UserDefaults.standard.set(false, forKey: "imperial")
+            UserDefaults.standard.set(true, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
         
 
         if UserDefaults.standard.bool(forKey: "imperial") == false {
-            imperialPressed = false
+            WASettingsViewController.imperialPressed = false
             let uncheckImage = UIImage(named: "square_checkmark_uncheck")
             imperialButton.setImage(uncheckImage, for: .normal)
             
-            UserDefaults.standard.set(false, forKey: "metric")
+            UserDefaults.standard.set(false, forKey: "imperial")
             UserDefaults.standard.synchronize()
         }
         else {
-            imperialPressed = true
+            WASettingsViewController.imperialPressed = true
             let checkImage = UIImage(named: "square_checkmark_check")
             imperialButton.setImage(checkImage, for: .normal)
             
-            UserDefaults.standard.set(true, forKey: "metric")
+            UserDefaults.standard.set(true, forKey: "imperial")
             UserDefaults.standard.synchronize()
         }
     }
@@ -159,8 +160,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func humidityButtonPressed(_ sender: Any) {
-        if humidityPressed == true {
-            humidityPressed = false
+        if WASettingsViewController.humidityPressed == true {
+            WASettingsViewController.humidityPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
             humidityButton.setImage(uncheckImage, for: .normal)
             print("uncheck")
@@ -169,7 +170,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             UserDefaults.standard.synchronize()
         }
         else {
-            humidityPressed = true
+            WASettingsViewController.humidityPressed = true
             
             let checkImage = UIImage(named: "checkmark_check")
             humidityButton.setImage(checkImage, for: .normal)
@@ -180,8 +181,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func windButtonPressed(_ sender: Any) {
-        if windPressed == true {
-            windPressed = false
+        if WASettingsViewController.windPressed == true {
+            WASettingsViewController.windPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
             windButton.setImage(uncheckImage, for: .normal)
             
@@ -189,7 +190,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             UserDefaults.standard.synchronize()
         }
         else {
-            windPressed = true
+            WASettingsViewController.windPressed = true
             
             let checkImage = UIImage(named: "checkmark_check")
             windButton.setImage(checkImage, for: .normal)
@@ -201,19 +202,19 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     @IBAction func metricButtonPressed(_ sender: Any) {
-        if metricPressed == true {
-            metricPressed = false
-            imperialPressed = false
+        if WASettingsViewController.metricPressed == true {
+            WASettingsViewController.metricPressed = false
+            WASettingsViewController.imperialPressed = false
             
             let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            imperialButton.setImage(uncheckImage, for: .normal)
+            metricButton.setImage(uncheckImage, for: .normal)
             
             UserDefaults.standard.set(false, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
         else {
-            metricPressed = true
-            imperialPressed = false
+            WASettingsViewController.metricPressed = true
+            WASettingsViewController.imperialPressed = false
             
             let checkImage = UIImage(named: "square_checkmark_check")
             metricButton.setImage(checkImage, for: .normal)
@@ -227,21 +228,20 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func imperialButtonPressed(_ sender: Any) {
-        if imperialPressed == true {
-            imperialPressed = false
-            metricPressed = false
+        if WASettingsViewController.imperialPressed == true {
+            WASettingsViewController.imperialPressed = false
+            WASettingsViewController.metricPressed = false
             
             let uncheckImage = UIImage(named: "square_checkmark_uncheck")
             metricButton.setImage(uncheckImage, for: .normal)
             
-            UserDefaults.standard.set(false, forKey: "metric")
+            UserDefaults.standard.set(false, forKey: "imperial")
             UserDefaults.standard.synchronize()
         }
         else {
-            imperialPressed = true
-            metricPressed = false
+            WASettingsViewController.imperialPressed = true
+            WASettingsViewController.metricPressed = false
             
-        
             let checkImage = UIImage(named: "square_checkmark_check")
             imperialButton.setImage(checkImage, for: .normal)
             
@@ -255,8 +255,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
 
     
     @IBAction func pressureButtonPressed(_ sender: Any) {
-        if pressurePressed == true {
-            pressurePressed = false
+        if WASettingsViewController.pressurePressed == true {
+            WASettingsViewController.pressurePressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
             pressureButton.setImage(uncheckImage, for: .normal)
             
@@ -264,7 +264,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             UserDefaults.standard.synchronize()
         }
         else {
-            pressurePressed = true
+            WASettingsViewController.pressurePressed = true
             
             let checkImage = UIImage(named: "checkmark_check")
             pressureButton.setImage(checkImage, for: .normal)
@@ -276,24 +276,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     @IBAction func doneButtonPressed(_ sender: Any) {
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let homeVC = storyboard.instantiateViewController(withIdentifier: "WAHomeViewController") as! WAHomeViewController
-        
-        
-        if humidityPressed == false {
-            homeVC.humidityImageView?.isHidden = true
-            homeVC.humidityLabel?.isHidden = true
-        }
-        else {
-            homeVC.humidityImageView?.isHidden = false
-            homeVC.humidityLabel?.isHidden = false
-        }
-        
-        
+        self.dismiss(animated: true, completion: nil)
         UserDefaults.standard.synchronize()
-        
-        self.navigationController?.pushViewController(homeVC, animated: true)
     }
     
 

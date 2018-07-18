@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import IQKeyboardManagerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,9 +18,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        IQKeyboardManager.sharedManager().enable = true
+        configureSettings()
         return true
     }
 
+    func configureSettings(){
+        WASettingsViewController.humidityPressed = true
+        UserDefaults.standard.set(true, forKey: "humidity")
+        
+        WASettingsViewController.windPressed = true
+        UserDefaults.standard.set(true, forKey: "wind")
+        
+        WASettingsViewController.pressurePressed = true
+        UserDefaults.standard.set(true, forKey: "pressure")
+        
+        WASettingsViewController.metricPressed = true
+        UserDefaults.standard.set(true, forKey: "metric")
+        
+        WASettingsViewController.imperialPressed = false
+        UserDefaults.standard.set(false, forKey: "imperial")
+    }
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

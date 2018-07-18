@@ -8,8 +8,13 @@
 
 import UIKit
 import CoreLocation
+import IQKeyboardManagerSwift
 
-class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationManagerDelegate {
+class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
+   
+    
+    var placeArray = [String]()
+    var searchItem: String!
     
     static var latitude: Double!
     static var longitude: Double!
@@ -33,8 +38,10 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
     //MARK: - Outlets
     @IBOutlet weak var headerImageView: UIImageView!
     @IBOutlet weak var bodyImageView: UIImageView!
-    
     @IBOutlet weak var skyColorImageView: UIImageView!
+    
+    @IBOutlet weak var searchTableView: UITableView!
+    
     
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var summaryLabel: UILabel!
@@ -58,6 +65,17 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
     @IBOutlet weak var windMphLabel: UILabel!
     @IBOutlet weak var pressureHpaLabel: UILabel!
     
+    
+    @IBOutlet weak var searchView: UIView!
+    @IBOutlet weak var searchScrollView: UIScrollView!
+    @IBOutlet weak var blurEfectView: UIVisualEffectView!
+    
+    
+    @IBOutlet weak var leadingSearchTextFieldConstraint: NSLayoutConstraint!
+    @IBOutlet weak var trailingSearchTextFieldConstraint: NSLayoutConstraint!
+    
+    
+    
     let locationManager = CLLocationManager()
     
 
@@ -67,16 +85,28 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
       
         searchTextField.delegate = self
         
+        searchTableView.delegate = self
+        searchTableView.dataSource = self
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
+        searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
+        
+        //dissmis Keyboard
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
+        self.view.addGestureRecognizer(tapGesture)
+        
+        self.searchTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        searchTableView.isHidden = true
+        blurEfectView.isHidden = true
         
         getWeatherComponents()
         
@@ -89,17 +119,37 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
             pressureLabel.isHidden = true
             pressureHpaLabel.isHidden = true
         }
+        else if UserDefaults.standard.bool(forKey: "pressure") == true {
+            pressureImageView.isHidden = false
+            pressureLabel.isHidden = false
+            pressureHpaLabel.isHidden = false
+        }
         if UserDefaults.standard.bool(forKey: "humidity") == false {
             humidityImageView.isHidden = true
             humidityLabel.isHidden = true
             humidityPercentageLabel.isHidden = true
+        }
+        else if UserDefaults.standard.bool(forKey: "humidity") == true {
+            humidityImageView.isHidden = false
+            humidityLabel.isHidden = false
+            humidityPercentageLabel.isHidden = false
         }
         if UserDefaults.standard.bool(forKey: "wind") == false {
             windImageView.isHidden = true
             windLabel.isHidden = true
             windMphLabel.isHidden = true
         }
-        
+        else if UserDefaults.standard.bool(forKey: "wind") == true {
+            windImageView.isHidden = false
+            windLabel.isHidden = false
+            windMphLabel.isHidden = false
+        }
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+   
     }
 
     override func didReceiveMemoryWarning() {
@@ -109,11 +159,93 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
     
     
     //MARK: - Actions
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-       performSegue(withIdentifier: "searchScreen", sender: self)
-        return false
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searchTextField.text != "" {
+            return placeArray.count
+        }
+        else {
+            return 0
+        }
     }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
+        
+        cell.cityLabel.text = placeArray[indexPath.row]
+        
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+
+    @objc func textChanged(sender:UITextField) {
+        WeatherNetworkManager.searchCities(name_startsWith: searchTextField.text!, success: { (response) in
+            print("RESPONSE: \(response)")
+            
+            let geonameData = (response["geonames"].array)!
+            print("GEONAMEDATA: \(geonameData)")
+            
+            let nameDataDict = (geonameData[0].dictionary)!
+            print("NAMEDATA: \(nameDataDict)")
+            
+            let nameDataString = (nameDataDict["name"]?.string)!
+            print("NNNAME: \(nameDataString)")
+            
+            self.searchItem = nameDataString
+            
+            self.placeArray.append(self.searchItem)
+            print("PLACEARRAY: \(self.placeArray)")
+            
+            
+            WASearchViewController.searchTerm = self.searchTextField.text!
+            print("SEARCHTERM: \((WASearchViewController.searchTerm))")
+            
+            self.searchTableView.reloadData()
+        }) { (error) in
+            print(error.localizedDescription)
+        }
+        self.searchTableView.reloadData()
+    }
+    
+    
+    
+    @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
+        searchTextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        searchTableView.isHidden = false
+        blurEfectView.isHidden = false
+        
+        leadingSearchTextFieldConstraint.constant = 20
+        trailingSearchTextFieldConstraint.constant = 20
+        settingsButton.isHidden = true
+        
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        searchTableView.isHidden = true
+        blurEfectView.isHidden = true
+        
+        leadingSearchTextFieldConstraint.constant = 74
+        trailingSearchTextFieldConstraint.constant = 73
+        settingsButton.isHidden = false
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let settingsView = segue.destination as! WASettingsViewController
+        
+        settingsView.getHeaderImage = self.headerImageView.image!
+        settingsView.getBodyImage = self.bodyImageView.image!
+        settingsView.getSkyColorImage = self.skyColorImageView.image
+        
+        settingsView.delegate = self
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
@@ -121,18 +253,15 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
         
         WAHomeViewController.latitude = locValue.latitude
         WAHomeViewController.longitude = locValue.longitude
-        
     }
-    
-    
+
     
     func getWeatherComponents(){
-        
         if Reachability.isConnectedToNetwork(){
             print("Internet Connection Available!")
             
             WeatherNetworkManager.getWeather(success: { (response) in
-                //print("Get weather response: \(response)")
+                print("Get weather response: \(response)")
                 
                 if let currentlyData = response["currently"].dictionary {
                     print("Saša's currentlyDATA: \(currentlyData)")
@@ -145,156 +274,63 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
                     let iconData = (currentlyData["icon"]?.string)!
                     print("saša icon: \(iconData)")
                     
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let searchVC = storyboard.instantiateViewController(withIdentifier: "WASearchViewController") as! WASearchViewController
-                    
-                    
-                    if iconData == "clear-day" {
-                        self.headerImageView.image = UIImage(named: "header_image-clear-day")
-                        self.bodyImageView.image = UIImage(named: "body_image-clear-day")
-                        self.skyColorImageView.image = UIImage(named: "day")
+                    DispatchQueue.main.async {
+                        self.headerImageView.image = UIImage(named: "header_image-\(iconData)")
+                        self.bodyImageView.image = UIImage(named: "body_image-\(iconData)")
                         
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    if iconData == "clear-night" {
-                        self.headerImageView.image = UIImage(named: "header_image-clear-night")
-                        self.bodyImageView.image = UIImage(named: "bodyclearnight")
-                        self.skyColorImageView.image = UIImage(named: "")
                         
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    if iconData == "cloudy" {
-                        self.headerImageView.image = UIImage(named: "header_image-cloudy")
-                        self.bodyImageView.image = UIImage(named: "body_image-cloudy")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "fog" {
-                        self.headerImageView.image = UIImage(named: "header_image-fog")
-                        self.bodyImageView.image = UIImage(named: "body_image-fog")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "hail" {
-                        self.headerImageView.image = UIImage(named: "header_image-hail")
-                        self.bodyImageView.image = UIImage(named: "body_image-hail")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "partly-cloudy-day" {
-                        self.headerImageView.image = UIImage(named: "header_image-partly-cloudy-day")
-                        self.bodyImageView.image = UIImage(named: "body_image-partly-cloudy-day")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "partly-cloudy-night" {
-                        self.headerImageView.image = UIImage(named: "header_image-partly-cloudy-night")
-                        self.bodyImageView.image = UIImage(named: "body_image-partly-cloudy-night")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "rain" {
-                        self.headerImageView.image = UIImage(named: "header_image-rain")
-                        self.bodyImageView.image = UIImage(named: "body_image-rain")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "sleet" {
-                        self.headerImageView.image = UIImage(named: "header_image-sleet")
-                        self.bodyImageView.image = UIImage(named: "body_image-sleet")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "snow" {
-                        self.headerImageView.image = UIImage(named: "header_image-snow")
-                        self.bodyImageView.image = UIImage(named: "body_image-snow")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "thunderstorm" {
-                        self.headerImageView.image = UIImage(named: "header_image-thunderstorm")
-                        self.bodyImageView.image = UIImage(named: "body_image-thunderstorm")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "tornado" {
-                        self.headerImageView.image = UIImage(named: "header_image-tornado")
-                        self.bodyImageView.image = UIImage(named: "body_image-tornado")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
-                    }
-                    else if iconData == "wind" {
-                        self.headerImageView.image = UIImage(named: "header_image-wind")
-                        self.bodyImageView.image = UIImage(named: "body_image-wind")
-                        self.skyColorImageView.image = UIImage(named: "day")
-                        
-                        searchVC.getHeaderImage = self.headerImageView.image
-                        searchVC.getBodyImage = self.bodyImageView.image
-                        searchVC.getSkyColorImage = self.skyColorImageView.image
+                        if iconData == "clear-day" {
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        if iconData == "clear-night" {
+                           self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                        }
+                        if iconData == "cloudy" {
+                           self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        else if iconData == "fog" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0xABD6E9).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        else if iconData == "hail" {
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        else if iconData == "partly-cloudy-day" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        else if iconData == "partly-cloudy-night" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                        }
+                        else if iconData == "rain" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                        }
+                        else if iconData == "sleet" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
+                        else if iconData == "snow" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x0B3A4E).cgColor, UIColor(hex: 0x80D5F3).cgColor)
+                        }
+                        else if iconData == "thunderstorm" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                        }
+                        else if iconData == "tornado" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                        }
+                        else if iconData == "wind" {
+                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                        }
                     }
                     
                     let pressureData = (currentlyData["pressure"]?.double)!
                     //print("saša pressure: \(pressureData)")
                     self.pressureLabel.text = "\(pressureData)"
                     
-                    self.temperatureData = (currentlyData["temperature"]?.double)!
-                    //print("saša temperature: \(temperatureData)")
-                    if UserDefaults.standard.bool(forKey: "imperial") == true{
-                        self.temperatureLabel.text = "\(Double(round(1000*self.temperatureData)/1000))"
-                    }
-                    
-                    
-                    let intTemp = Int(self.temperatureData)
-                    self.tempCelsius = intTemp.convertToCelsius(fahrenheit: intTemp)
-                    if UserDefaults.standard.bool(forKey: "metric") == true {
-                        self.temperatureLabel.text = "\((self.tempCelsius)!)"
-                    }
-                    
-                    
-                    
-                    
+                    self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+                  
                     //time
                     let timeData = (currentlyData["time"]?.int)!
                     //print("saša time: \(timeData)")
                     self.bodyImageView.image = UIImage(named: "\(timeData)")
-                    
-                    
-                    
-                    
+  
                     
                     let windSpeedData = (currentlyData["windSpeed"]?.double)!
                     //print("saša windSpeed: \(windSpeedData)")
@@ -306,8 +342,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
                 }
                 
                 
-                
-                
                 if let dailyData = response["daily"].dictionary {
                     //print("Saša's dailyDATA: \(dailyData)")
                     
@@ -317,37 +351,11 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
                     let dataDict = (data[7].dictionary)!
                     //print("Saša temperatureMin: \(dataDict)")
                     
-                    //MinTemp
-                    self.tempMinData = (dataDict["temperatureMin"]?.double)!
-                    //print("Saša tempMinData: \(tempMinData)")
-                    //self.minimalTemperatureLabel.text = "\(self.tempMinData)"
-                    if UserDefaults.standard.bool(forKey: "imperial") == true{
-                        self.minimalTemperatureLabel.text = "\(Double(round(1000*self.tempMinData)/1000))"
-                    }
                     
-                    let intMinTemp = Int(self.temperatureData)
-                    self.minTempCelsius = intMinTemp.convertToCelsius(fahrenheit: intMinTemp)
-                    if UserDefaults.standard.bool(forKey: "metric") == true {
-                        self.minimalTemperatureLabel.text = "\((self.minTempCelsius)!)"
-                    }
+                    self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
                     
-                    
-                    //MaxTemp
-                    self.tempMaxData = (dataDict["temperatureMax"]?.double)!
-                    //print("Saša tempMaxData: \(tempMaxData)")
-                    //self.maximalTemperature.text = "\(self.tempMaxData)"
-                    if UserDefaults.standard.bool(forKey: "imperial") == true{
-                        self.maximalTemperatureLabel.text = "\(Double(round(1000*self.tempMaxData)/1000))"
-                    }
-                    
-                    let intMaxTemp = Int(self.temperatureData)
-                    self.maxTempCelsius = intMaxTemp.convertToCelsius(fahrenheit: intMaxTemp)
-                    if UserDefaults.standard.bool(forKey: "metric") == true {
-                        self.maximalTemperatureLabel.text = "\((self.maxTempCelsius)!)"
-                    }
-                    
+                    self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
                 }
-                
             }) { (error) in
                 print(error.localizedDescription)
             }
@@ -360,8 +368,19 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, CLLocationMan
         }
     }
         
-        
-       
+    @IBAction func settingsButtonPressed(_ sender: Any) {
+        performSegue(withIdentifier: "settingsSegue", sender: self)
+    }
+    
+}
 
+
+
+extension WAHomeViewController: WASettingsViewControllerDelegate {
+    func addImage(image: UIImage) {
+        headerImageView.image = image
+        bodyImageView.image = image
+        skyColorImageView.image = image
+    }
 }
 

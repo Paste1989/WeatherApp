@@ -18,11 +18,6 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
     
     var placeArray = [String]()
     
-    var getHeaderImage: UIImage!
-    var getBodyImage: UIImage!
-    var getSkyColorImage: UIImage!
-    
-    
     var searchItem: String!
     
 
@@ -31,12 +26,10 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var searchTextField: UITextField!
     @IBOutlet weak var searchScrollView: UIScrollView!
     
-    @IBOutlet weak var backGroundImageView: UIImageView!
-    @IBOutlet weak var coverImageView: UIImageView!
+    @IBOutlet weak var bodyImageView: UIImageView!
+    @IBOutlet weak var headerImageView: UIImageView!
+    @IBOutlet weak var skyImageView: UIImageView!
     
-    @IBOutlet weak var skyColorImageView: UIImageView!
-    
-    @IBOutlet weak var searchBarTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchBarBottomConstraint: NSLayoutConstraint!
     
     
@@ -57,11 +50,6 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
-        //        headerImageView.image = getHeaderImage
-        //        bodyImageView.image = getBodyImage
-        //        skyColorImageView.image = getSkyColorImage
-        
-        
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
         self.searchTableView.reloadData()
@@ -75,8 +63,6 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
         navigationController?.navigationBar.isHidden = true
         navigationController?.navigationBar.tintColor = UIColor.clear
         navigationController?.navigationBar.setValue(true, forKey: "hidesShadow")
-        let backButton = UIImage(named: "checkmark_uncheck")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: backButton, style: UIBarButtonItemStyle.plain, target: self, action: #selector(goBack))
         
         searchTextField.addImage(direction: .Right, imageName: "search_icon", frame: CGRect(x: -20, y: 0, width: 20, height: 20), backgroundColor: .clear)
     }
@@ -119,8 +105,7 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
         return 50
     }
     
-    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) 
-    {
+    public func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
       
     }
     
@@ -128,11 +113,9 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         print("locations = \(locValue.latitude) \(locValue.longitude)")
     }
-    
 
-    
     @objc func textChanged(sender:UITextField) {
-        WeatherNetworkManager.getLocation(username: "paste1989", name_startsWith: searchTextField.text!, success: { (response) in
+        WeatherNetworkManager.searchCities(name_startsWith: searchTextField.text!, success: { (response) in
             print("RESPONSE: \(response)")
             
             let geonameData = (response["geonames"].array)!
@@ -189,12 +172,7 @@ class WASearchViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func goBackButtonPressed(_ sender: Any) {
-         navigationController?.popViewController(animated: true)
-    }
-    
-    
-    @objc func goBack(){
-        navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

@@ -13,7 +13,7 @@ import SwiftyJSON
 
 var baseURL: String = "https://api.darksky.net/forecast/a37b2331d675e600a19a4f676c1a538b/37.8267,-122.4233"
 
-var geoURL: String = "http://api.geonames.org/findNearbyPlaceNameJSON?lat=45.6627063274732&lng=18.4225681907171&username=paste1989"
+var geoURL: String = "http://api.geonames.org/searchJSON?name_startsWith=#CHANGE#&maxRows=1000&username=paste1989"
 
 
 struct WeatherNetworkManager {
@@ -33,12 +33,13 @@ struct WeatherNetworkManager {
     }
     
     
-    static func getLocation(username: String, name_startsWith: String, success: @escaping (JSON) -> Void, failure: @escaping(Error) -> Void) {
+    static func searchCities(name_startsWith: String, success: @escaping (JSON) -> Void, failure: @escaping(Error) -> Void) {
         let headers: HTTPHeaders = [
             "Accept": "application/json"]
-
-        
-        WASyncManager.request(url: geoURL, method: .get, parameters: nil, header: headers, success: { (response) in
+       
+        let filterURL = geoURL.replacingOccurrences(of: "#CHANGE#", with: name_startsWith)
+   
+        WASyncManager.request(url: filterURL, method: .get, parameters: nil, header: headers, success: { (response) in
             success(response)
             print("response: \(response)")
         }) { (error) in

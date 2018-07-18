@@ -22,6 +22,7 @@ class CurrentlyWeather: NSObject {
     var summary: String!
     
     
+    
     init(json: JSON) {
        
         self.humidity = json["humidity"].doubleValue
