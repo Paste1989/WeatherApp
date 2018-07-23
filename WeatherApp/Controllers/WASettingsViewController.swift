@@ -27,6 +27,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     static var metricPressed: Bool!
     static var imperialPressed: Bool!
     
+    var chosenLocations: [String] = []
+    
     
     //MARK: - Outlets
     @IBOutlet weak var settingsTableView: UITableView!
@@ -48,6 +50,10 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let location = UserDefaults.standard.string(forKey: "Location")
+        
+        chosenLocations.append(location!)
         
         
         self.settingsTableView.delegate = self
@@ -146,11 +152,17 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
 
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return chosenLocations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : SettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as! SettingsTableViewCell
+        
+        
+        cell.locationLabel.text = chosenLocations[indexPath.row]
+        
+        let checkImage = UIImage(named: "square_checkmark_check")
+        cell.confirmationButton.setImage(checkImage, for: .normal)
         
         return cell
     }
@@ -200,19 +212,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    
     @IBAction func metricButtonPressed(_ sender: Any) {
-        if WASettingsViewController.metricPressed == true {
-            WASettingsViewController.metricPressed = false
-            WASettingsViewController.imperialPressed = false
-            
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            metricButton.setImage(uncheckImage, for: .normal)
-            
-            UserDefaults.standard.set(false, forKey: "metric")
-            UserDefaults.standard.synchronize()
-        }
-        else {
             WASettingsViewController.metricPressed = true
             WASettingsViewController.imperialPressed = false
             
@@ -224,21 +224,11 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             
             UserDefaults.standard.set(true, forKey: "metric")
             UserDefaults.standard.synchronize()
-        }
     }
     
+    
+    
     @IBAction func imperialButtonPressed(_ sender: Any) {
-        if WASettingsViewController.imperialPressed == true {
-            WASettingsViewController.imperialPressed = false
-            WASettingsViewController.metricPressed = false
-            
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            metricButton.setImage(uncheckImage, for: .normal)
-            
-            UserDefaults.standard.set(false, forKey: "imperial")
-            UserDefaults.standard.synchronize()
-        }
-        else {
             WASettingsViewController.imperialPressed = true
             WASettingsViewController.metricPressed = false
             
@@ -250,8 +240,23 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             
             UserDefaults.standard.set(true, forKey: "imperial")
             UserDefaults.standard.synchronize()
-        }
     }
+    
+    
+//    WASettingsViewController.metricPressed = true
+//    WASettingsViewController.imperialPressed = false
+//    
+//    let checkImage = UIImage(named: "square_checkmark_check")
+//    metricButton.setImage(checkImage, for: .normal)
+//    
+//    let uncheckImage = UIImage(named: "square_checkmark_uncheck")
+//    imperialButton.setImage(uncheckImage, for: .normal)
+//    
+//    UserDefaults.standard.set(true, forKey: "metric")
+//    UserDefaults.standard.set(false, forKey: "imperial")
+//    UserDefaults.standard.synchronize()
+    
+    
 
     
     @IBAction func pressureButtonPressed(_ sender: Any) {

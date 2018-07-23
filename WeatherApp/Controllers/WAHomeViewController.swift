@@ -14,10 +14,15 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
    
     
     var placeArray = [String]()
-    var searchItem: String!
+    var searchItem: String = ""
     
-    static var latitude: Double!
-    static var longitude: Double!
+    var cityName: String!
+    
+    var lat: String = ""
+    var lng: String = ""
+    
+    var latitude: String = ""
+    var longitude: String = ""
     
     
     var temperatureData: Double!
@@ -82,6 +87,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        getWeatherComponents()
       
         searchTextField.delegate = self
         
@@ -95,23 +102,19 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
-        //dissmis Keyboard
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-        self.view.addGestureRecognizer(tapGesture)
-        
+        self.searchTableView.allowsSelection = true
+ 
         self.searchTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.isHidden = true
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
         
-        getWeatherComponents()
-        
-        navigationController?.navigationBar.isHidden = true
-        
+
         searchTextField.addImage(direction: .Right, imageName: "search_icon", frame: CGRect(x: -20, y: 0, width: 20, height: 20), backgroundColor: .clear)
         
         if UserDefaults.standard.bool(forKey: "pressure") == false {
@@ -144,17 +147,20 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windLabel.isHidden = false
             windMphLabel.isHidden = false
         }
+        
+        self.searchTableView.reloadData()
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-   
+        placeArray.removeAll()
+        
+        self.searchTableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-       
     }
     
     
@@ -168,22 +174,164 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         }
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
         
-        cell.cityLabel.text = placeArray[indexPath.row]
-        
-        
+            cell.cityLabel.text = placeArray[indexPath.row]
+            cityName = cell.cityLabel.text
+
         return cell
     }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
+        
+        print("cell Pressed")
+        
+        let checkImage = UIImage(named: "square_checkmark_check")
+        cell.imageView?.image = checkImage
+        
+        cityLabel.text = cityName
+        UserDefaults.standard.set(cityName, forKey: "Location")
+        
+        blurEfectView.isHidden = true
+        searchTableView.isHidden = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
+        dismissKeyboard(tapGesture)
+    
+        searchTextField.text = ""
+        
+        
+        let latitude = UserDefaults.standard.string(forKey: "searchLatitude")
+        let longitude = UserDefaults.standard.string(forKey: "searchLongitude")
+
+        WeatherNetworkManager.getWeather(latitude: latitude!, longitude: longitude!, success: { (response) in
+            print("DIDSELECTROWresponse: \(response)")
+            
+            
+            let latitude = (response["latitude"].double)!
+            let longitude = (response["longitude"].double)!
+            print("LALO: \(latitude), \(longitude)")
+            
+
+            
+            if let currentlyData = response["currently"].dictionary {
+                print("Saša's currentlyDATA: \(currentlyData)")
+                
+                let humidityData = (currentlyData["humidity"]?.double)!
+                //print("saša humidity: \(humidityData)")
+                self.humidityLabel.text = "\(humidityData)"
+                
+                
+                let iconData = (currentlyData["icon"]?.string)!
+                print("saša icon: \(iconData)")
+                
+                DispatchQueue.main.async {
+                    self.headerImageView.image = UIImage(named: "header_image-\(iconData)")
+                    self.bodyImageView.image = UIImage(named: "body_image-\(iconData)")
+                    
+                    
+                    if iconData == "clear-day" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    if iconData == "clear-night" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                    }
+                    if iconData == "cloudy" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    else if iconData == "fog" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0xABD6E9).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    else if iconData == "hail" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    else if iconData == "partly-cloudy-day" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    else if iconData == "partly-cloudy-night" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                    }
+                    else if iconData == "rain" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                    }
+                    else if iconData == "sleet" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                    else if iconData == "snow" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x0B3A4E).cgColor, UIColor(hex: 0x80D5F3).cgColor)
+                    }
+                    else if iconData == "thunderstorm" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                    }
+                    else if iconData == "tornado" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                    }
+                    else if iconData == "wind" {
+                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                    }
+                }
+                
+                let pressureData = (currentlyData["pressure"]?.double)!
+                //print("saša pressure: \(pressureData)")
+                self.pressureLabel.text = "\(pressureData)"
+                
+                self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+                
+                //time
+                let timeData = (currentlyData["time"]?.int)!
+                //print("saša time: \(timeData)")
+                self.bodyImageView.image = UIImage(named: "\(timeData)")
+                
+                
+                let windSpeedData = (currentlyData["windSpeed"]?.double)!
+                //print("saša windSpeed: \(windSpeedData)")
+                self.windLabel.text = "\(windSpeedData)"
+                
+                let summaryData = (currentlyData["summary"]?.string)!
+                print("saša summary: \(summaryData)")
+                self.summaryLabel.text = summaryData
+            }
+            
+            
+            if let dailyData = response["daily"].dictionary {
+                //print("Saša's dailyDATA: \(dailyData)")
+                
+                let data = (dailyData["data"]?.array)!
+                // print("Saša DATA: \(data)")
+                
+                let dataDict = (data[7].dictionary)!
+                //print("Saša temperatureMin: \(dataDict)")
+                
+                
+                self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
+                
+                self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
+                
+//dissmis Keyboard
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
+                self.view.addGestureRecognizer(tapGesture)
+                
+            }
+        }) { (error) in
+            print(error.localizedDescription)
+        }
+    }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
     
+    
+    
 
     @objc func textChanged(sender:UITextField) {
-        WeatherNetworkManager.searchCities(name_startsWith: searchTextField.text!, success: { (response) in
+        self.searchTableView.reloadData()
+        WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
             print("RESPONSE: \(response)")
             
             let geonameData = (response["geonames"].array)!
@@ -196,13 +344,23 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             print("NNNAME: \(nameDataString)")
             
             self.searchItem = nameDataString
+            print("searchITEM: \(self.searchItem)")
             
-            self.placeArray.append(self.searchItem)
-            print("PLACEARRAY: \(self.placeArray)")
+            if self.searchItem == self.searchTextField.text {
+                self.placeArray.append(self.searchItem)
+                print("PLACEARRAY: \(self.placeArray)")
+            }
             
             
-            WASearchViewController.searchTerm = self.searchTextField.text!
-            print("SEARCHTERM: \((WASearchViewController.searchTerm))")
+            
+
+            self.latitude = (nameDataDict["lat"]?.string)!
+            print("LATITUDEtextchanged: \(self.latitude)")
+            UserDefaults.standard.set(self.latitude, forKey: "searchLatitude")
+
+            self.longitude = (nameDataDict["lng"]?.string)!
+            print("LONGITUDEtextchanged: \(self.longitude)")
+            UserDefaults.standard.set(self.longitude, forKey: "searchLongitude")
             
             self.searchTableView.reloadData()
         }) { (error) in
@@ -211,11 +369,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         self.searchTableView.reloadData()
     }
     
-    
-    
-    @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
-        searchTextField.resignFirstResponder()
-    }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         searchTableView.isHidden = false
@@ -228,6 +381,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         return true
     }
     
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
@@ -235,7 +389,10 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         leadingSearchTextFieldConstraint.constant = 74
         trailingSearchTextFieldConstraint.constant = 73
         settingsButton.isHidden = false
+        
+        searchTextField.text = ""
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let settingsView = segue.destination as! WASettingsViewController
@@ -247,12 +404,23 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         settingsView.delegate = self
     }
     
+    
+///////////////////
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         print("locations = \(locValue.latitude) \(locValue.longitude)")
+
         
-        WAHomeViewController.latitude = locValue.latitude
-        WAHomeViewController.longitude = locValue.longitude
+        lat = String(locValue.latitude)
+        print("LATT: \(lat)")
+        UserDefaults.standard.set(lat, forKey: "currentLat")
+        
+        lng = String(locValue.longitude)
+        UserDefaults.standard.set(lng, forKey: "currentLng")
+        
+        locationManager.stopUpdatingLocation()
+        
     }
 
     
@@ -260,9 +428,39 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         if Reachability.isConnectedToNetwork(){
             print("Internet Connection Available!")
             
-            WeatherNetworkManager.getWeather(success: { (response) in
+            let currentLatitude = (UserDefaults.standard.string(forKey: "currentLat"))!
+            let currnetLongitude = (UserDefaults.standard.string(forKey: "currentLng"))!
+            
+            WeatherNetworkManager.getWeather(latitude: currentLatitude, longitude: currnetLongitude, success: { (response) in
                 print("Get weather response: \(response)")
                 
+                
+                let locationLatitude = (response["latitude"].double)!
+                print("WEATHERLOCATION LATITUDE: \(locationLatitude)")
+                
+                let locationLongitude = (response["longitude"].double)!
+                print("WEATHERLOCATION LONGITUDE: \(locationLongitude)")
+                
+                
+                WeatherNetworkManager.getLocationName(latitude: locationLatitude, longitude: locationLongitude, success: { (response) in
+                    print("LOCATIONNAMEresponse: \(response)")
+
+                    let geoData = (response["geonames"].array)!
+                    print("GEODATA: \(geoData)")
+
+                    let data = (geoData[0].dictionary)!
+                    print("DATAAA: \(data)")
+
+                    let locationName = (data["name"]?.string)!
+                    print("LOCATIONAME: \(locationName)")
+
+                    self.cityLabel.text = locationName
+                }, failure: { (error) in
+                    print(error.localizedDescription)
+                })
+                
+
+            
                 if let currentlyData = response["currently"].dictionary {
                     print("Saša's currentlyDATA: \(currentlyData)")
                     
@@ -273,6 +471,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     
                     let iconData = (currentlyData["icon"]?.string)!
                     print("saša icon: \(iconData)")
+                    
                     
                     DispatchQueue.main.async {
                         self.headerImageView.image = UIImage(named: "header_image-\(iconData)")
@@ -359,6 +558,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             }) { (error) in
                 print(error.localizedDescription)
             }
+
         }else{
             print("Internet Connection not Available!")
             
@@ -367,11 +567,23 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
+//////////////////
+    
+    
+    @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
+        searchTextField.resignFirstResponder()
+    }
         
     @IBAction func settingsButtonPressed(_ sender: Any) {
         performSegue(withIdentifier: "settingsSegue", sender: self)
     }
     
+    
+    @IBAction func searchTextFieldPressed(_ sender: Any) {
+        placeArray = []
+       
+    }
 }
 
 

@@ -133,3 +133,14 @@ extension UIColor {
         self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
     }
 }
+
+//Array
+extension Array where Element: Equatable {
+    func removingDuplicates() -> Array {
+        return reduce(into: []) { result, element in
+            if !result.contains(element) {
+                result.append(element)
+            }
+        }
+    }
+}

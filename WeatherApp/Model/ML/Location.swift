@@ -12,10 +12,13 @@ import SwiftyJSON
 
 class Location: NSObject {
    
-    var name: String!
+    var placeName: String!
+    var latitude: String!
+    var longitude: String!
     
     init(json: JSON) {
-        self.name = json["name"].stringValue
+        self.placeName = json["placeName"].stringValue
+        self.latitude = json["latitude"].stringValue
+        self.longitude = json["longitude"].stringValue
     }
-    
 }

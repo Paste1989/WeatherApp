@@ -1,5 +1,5 @@
 //
-//  CurrentlyWeather.swift
+//  Weather.swift
 //  WeatherApp
 //
 //  Created by Saša Brezovac on 06.07.2018..
@@ -11,7 +11,7 @@ import UIKit
 import SwiftyJSON
 
 
-class CurrentlyWeather: NSObject {
+class Weather: NSObject {
     
     var humidity: Double!
     var icon: String!
@@ -20,6 +20,9 @@ class CurrentlyWeather: NSObject {
     var time: Int!
     var windSpeed: Double!
     var summary: String!
+    
+    var temperatureMin : Double!
+    var temperatureMax: Double!
     
     
     
@@ -32,5 +35,8 @@ class CurrentlyWeather: NSObject {
         self.time = json["time"].intValue
         self.windSpeed = json["windSpeed"].doubleValue
         self.summary = json["summary"].stringValue
+        
+        self.temperatureMin = json["temperatureMin"].doubleValue
+        self.temperatureMax = json["temperatureMax"].doubleValue
     }
 }

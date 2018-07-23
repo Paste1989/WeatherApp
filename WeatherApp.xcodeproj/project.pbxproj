@@ -18,12 +18,10 @@
 		2746D86820EF677600423A46 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2746D86620EF677600423A46 /* LaunchScreen.storyboard */; };
 		2746D87320EF677600423A46 /* WeatherAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D87220EF677600423A46 /* WeatherAppTests.swift */; };
 		2746D87E20EF677600423A46 /* WeatherAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D87D20EF677600423A46 /* WeatherAppUITests.swift */; };
-		2746D88D20EF683C00423A46 /* WASearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D88C20EF683C00423A46 /* WASearchViewController.swift */; };
 		2746D88F20EF686700423A46 /* WASettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D88E20EF686700423A46 /* WASettingsViewController.swift */; };
 		2756D58520EF8F0B0036FA92 /* WANetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58420EF8F0B0036FA92 /* WANetworkManager.swift */; };
 		2756D58720EF8FA20036FA92 /* WAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58620EF8FA20036FA92 /* WAManager.swift */; };
-		2756D58920EFA0750036FA92 /* CurrentlyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58820EFA0750036FA92 /* CurrentlyWeather.swift */; };
-		2756D58B20EFA2210036FA92 /* DailyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58A20EFA2210036FA92 /* DailyWeather.swift */; };
+		2756D58920EFA0750036FA92 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58820EFA0750036FA92 /* Weather.swift */; };
 		277688AE20F0DF9B00E14298 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */; };
 		27DB78A620F3734600AA3617 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */; };
 		27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A720F3E03F00AA3617 /* Extensions.swift */; };
@@ -67,12 +65,10 @@
 		2746D87920EF677600423A46 /* WeatherAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2746D87D20EF677600423A46 /* WeatherAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppUITests.swift; sourceTree = "<group>"; };
 		2746D87F20EF677600423A46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2746D88C20EF683C00423A46 /* WASearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WASearchViewController.swift; sourceTree = "<group>"; };
 		2746D88E20EF686700423A46 /* WASettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WASettingsViewController.swift; sourceTree = "<group>"; };
 		2756D58420EF8F0B0036FA92 /* WANetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WANetworkManager.swift; sourceTree = "<group>"; };
 		2756D58620EF8FA20036FA92 /* WAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAManager.swift; sourceTree = "<group>"; };
-		2756D58820EFA0750036FA92 /* CurrentlyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentlyWeather.swift; sourceTree = "<group>"; };
-		2756D58A20EFA2210036FA92 /* DailyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWeather.swift; sourceTree = "<group>"; };
+		2756D58820EFA0750036FA92 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		27DB78A720F3E03F00AA3617 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -183,7 +179,6 @@
 			children = (
 				2746D85C20EF677500423A46 /* WAHomeViewController.swift */,
 				2746D88E20EF686700423A46 /* WASettingsViewController.swift */,
-				2746D88C20EF683C00423A46 /* WASearchViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -201,8 +196,7 @@
 		2746D89120EF7AF600423A46 /* ML */ = {
 			isa = PBXGroup;
 			children = (
-				2756D58820EFA0750036FA92 /* CurrentlyWeather.swift */,
-				2756D58A20EFA2210036FA92 /* DailyWeather.swift */,
+				2756D58820EFA0750036FA92 /* Weather.swift */,
 				271C542020F7AB0F00F8940F /* Location.swift */,
 			);
 			path = ML;
@@ -505,10 +499,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2756D58B20EFA2210036FA92 /* DailyWeather.swift in Sources */,
 				270138B820EF81730029B607 /* WASyncManager.swift in Sources */,
 				27DB78A620F3734600AA3617 /* SettingsTableViewCell.swift in Sources */,
-				2746D88D20EF683C00423A46 /* WASearchViewController.swift in Sources */,
 				2746D88F20EF686700423A46 /* WASettingsViewController.swift in Sources */,
 				2746D86320EF677500423A46 /* WeatherApp.xcdatamodeld in Sources */,
 				271C542120F7AB0F00F8940F /* Location.swift in Sources */,
@@ -517,7 +509,7 @@
 				27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */,
 				2756D58720EF8FA20036FA92 /* WAManager.swift in Sources */,
 				2756D58520EF8F0B0036FA92 /* WANetworkManager.swift in Sources */,
-				2756D58920EFA0750036FA92 /* CurrentlyWeather.swift in Sources */,
+				2756D58920EFA0750036FA92 /* Weather.swift in Sources */,
 				2746D85B20EF677500423A46 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
