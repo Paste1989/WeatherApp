@@ -15,10 +15,25 @@ protocol WASettingsViewControllerDelegate: class {
 class WASettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
+    var weather = [Weather]()
+    
     var getHeaderImage: UIImage!
     var getBodyImage: UIImage!
     var getSkyColorImage: UIImage!
     
+    
+    var humidityData: Double = 0.0
+    var iconData: String = ""
+    var pressureData: Double = 0.0
+    var tempData: String = ""
+    var timeData: Int = 0
+    var windSpeedData: Double = 0.0
+    var summaryData: String = ""
+    
+    var minTempData: String = ""
+    var maxTempData: String = ""
+    
+
     weak var delegate : WASettingsViewControllerDelegate?
     
     static var humidityPressed: Bool!
@@ -51,9 +66,11 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let location = UserDefaults.standard.string(forKey: "Location")
+        let locations = (SavingDataHelper.getData())!
+        print("LOC: \(locations)")
+
         
-        chosenLocations.append(location!)
+        chosenLocations = locations
         
         
         self.settingsTableView.delegate = self
@@ -64,6 +81,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.bodyImageView.image = self.getBodyImage
             self.skyImageView.image = self.getSkyColorImage
         }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,40 +124,27 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         
-        if UserDefaults.standard.bool(forKey: "metric") == false {
-            WASettingsViewController.metricPressed = false
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            metricButton.setImage(uncheckImage, for: .normal)
-             
-            UserDefaults.standard.set(false, forKey: "metric")
-            UserDefaults.standard.synchronize()
-        }
-        else {
+        
+        if WASettingsViewController.metricPressed == true {
             WASettingsViewController.metricPressed = true
+            
+            WASettingsViewController.imperialPressed = true
             let checkImage = UIImage(named: "square_checkmark_check")
             metricButton.setImage(checkImage, for: .normal)
-            
             UserDefaults.standard.set(true, forKey: "metric")
-            UserDefaults.standard.synchronize()
-        }
-        
-
-        if UserDefaults.standard.bool(forKey: "imperial") == false {
-            WASettingsViewController.imperialPressed = false
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            imperialButton.setImage(uncheckImage, for: .normal)
-            
             UserDefaults.standard.set(false, forKey: "imperial")
             UserDefaults.standard.synchronize()
         }
-        else {
+        else if WASettingsViewController.imperialPressed == true {
+            
             WASettingsViewController.imperialPressed = true
             let checkImage = UIImage(named: "square_checkmark_check")
             imperialButton.setImage(checkImage, for: .normal)
-            
             UserDefaults.standard.set(true, forKey: "imperial")
+            UserDefaults.standard.set(false, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
+        
     }
     
     
@@ -160,11 +165,66 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
         cell.locationLabel.text = chosenLocations[indexPath.row]
-        
         let checkImage = UIImage(named: "square_checkmark_check")
         cell.confirmationButton.setImage(checkImage, for: .normal)
         
         return cell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
+//        let checkImage = UIImage(named: "square_checkmark_check")
+//        cell.confirmationButton.setImage(checkImage, for: .normal)
+        
+//        let name = UserDefaults.standard.string(forKey: "searchName")
+//        let latitude = UserDefaults.standard.string(forKey: "searchLatitude")
+//        let longitude = UserDefaults.standard.string(forKey: "searchLongitude")
+        
+        
+//        WeatherNetworkManager.getWeatherByLocationName(latitude: latitude!, longitude: longitude!, success: { (response) in
+//            print(response)
+//
+//            if let currentlyData = response["currently"].dictionary {
+//                print("Saša's currentlyDATA: \(currentlyData)")
+//
+//                self.humidityData = (currentlyData["humidity"]?.double)!
+//
+//                self.iconData = (currentlyData["icon"]?.string)!
+//
+//                self.pressureData = (currentlyData["pressure"]?.double)!
+//
+//                self.tempData = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+//
+//                //time
+//                self.timeData = (currentlyData["time"]?.int)!
+//
+//                self.windSpeedData = (currentlyData["windSpeed"]?.double)!
+//
+//                self.summaryData = (currentlyData["summary"]?.string)!
+//            }
+//
+//
+//            if let dailyData = response["daily"].dictionary {
+//                let data = (dailyData["data"]?.array)!
+//                let dataDict = (data[7].dictionary)!
+//
+//                self.minTempData = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
+//
+//                self.maxTempData = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
+//
+//
+////                self.weather.append(Weather(humidity: self.humidityData, icon: self.iconData, pressure: self.pressureData, temperature: Double(self.tempData)!, time: self.timeData, windSpeed: self.windSpeedData, summary: self.summaryData, temperatureMin: Double(self.minTempData)!, temperatureMax: Double(self.maxTempData)!))
+////
+////                WAHomeViewController.finalLocation.append(Location(placeName: name!, latitude: latitude!, longitude: longitude!))
+//
+//            }
+//        }) { (error) in
+//            print(error.localizedDescription)
+//        }
+        
+        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -213,52 +273,38 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func metricButtonPressed(_ sender: Any) {
-            WASettingsViewController.metricPressed = true
-            WASettingsViewController.imperialPressed = false
-            
-            let checkImage = UIImage(named: "square_checkmark_check")
-            metricButton.setImage(checkImage, for: .normal)
-            
+        print("metricPressed")
+        WASettingsViewController.metricPressed = true
+        WASettingsViewController.imperialPressed = false
             let uncheckImage = UIImage(named: "square_checkmark_uncheck")
             imperialButton.setImage(uncheckImage, for: .normal)
-            
+
+            let checkImage = UIImage(named: "square_checkmark_check")
+            metricButton.setImage(checkImage, for: .normal)
+
             UserDefaults.standard.set(true, forKey: "metric")
+            UserDefaults.standard.set(false, forKey: "imperial")
             UserDefaults.standard.synchronize()
     }
     
     
     
     @IBAction func imperialButtonPressed(_ sender: Any) {
-            WASettingsViewController.imperialPressed = true
-            WASettingsViewController.metricPressed = false
-            
-            let checkImage = UIImage(named: "square_checkmark_check")
-            imperialButton.setImage(checkImage, for: .normal)
-            
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            metricButton.setImage(uncheckImage, for: .normal)
-            
-            UserDefaults.standard.set(true, forKey: "imperial")
-            UserDefaults.standard.synchronize()
+        print("imperialPressed")
+        WASettingsViewController.imperialPressed = true
+        WASettingsViewController.metricPressed = false
+        let uncheckImage = UIImage(named: "square_checkmark_uncheck")
+        metricButton.setImage(uncheckImage, for: .normal)
+
+        let checkImage = UIImage(named: "square_checkmark_check")
+        imperialButton.setImage(checkImage, for: .normal)
+
+        UserDefaults.standard.set(true, forKey: "imperial")
+        UserDefaults.standard.set(false, forKey: "metric")
+        UserDefaults.standard.synchronize()
     }
     
-    
-//    WASettingsViewController.metricPressed = true
-//    WASettingsViewController.imperialPressed = false
-//    
-//    let checkImage = UIImage(named: "square_checkmark_check")
-//    metricButton.setImage(checkImage, for: .normal)
-//    
-//    let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-//    imperialButton.setImage(uncheckImage, for: .normal)
-//    
-//    UserDefaults.standard.set(true, forKey: "metric")
-//    UserDefaults.standard.set(false, forKey: "imperial")
-//    UserDefaults.standard.synchronize()
-    
-    
 
-    
     @IBAction func pressureButtonPressed(_ sender: Any) {
         if WASettingsViewController.pressurePressed == true {
             WASettingsViewController.pressurePressed = false
@@ -281,8 +327,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     @IBAction func doneButtonPressed(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
         UserDefaults.standard.synchronize()
+        self.dismiss(animated: true, completion: nil)
     }
     
 

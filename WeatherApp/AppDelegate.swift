@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    
     func configureSettings(){
         WASettingsViewController.humidityPressed = true
         UserDefaults.standard.set(true, forKey: "humidity")
@@ -34,11 +35,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         WASettingsViewController.pressurePressed = true
         UserDefaults.standard.set(true, forKey: "pressure")
         
+        
+
         WASettingsViewController.metricPressed = true
         UserDefaults.standard.set(true, forKey: "metric")
         
         WASettingsViewController.imperialPressed = false
         UserDefaults.standard.set(false, forKey: "imperial")
+        UserDefaults.standard.synchronize()
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

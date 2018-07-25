@@ -22,10 +22,11 @@ class WAManager: NSObject {
     class func setTemparature(minTemp : Double) -> String{
         if UserDefaults.standard.bool(forKey: "imperial") == true{
             return "\(Double(round(1000*minTemp)/1000)) °F"
-        } else {
+        } else if UserDefaults.standard.bool(forKey: "metric") == true{
              let minTempCelsius = WAManager.convertToCelsius(fahrenheit: minTemp)
             return "\(minTempCelsius) °C"
         }
+        return "\(minTemp)"
     }
     
     class func convertToCelsius(fahrenheit: Double) -> Int{

@@ -16,9 +16,9 @@ class Location: NSObject {
     var latitude: String!
     var longitude: String!
     
-    init(json: JSON) {
-        self.placeName = json["placeName"].stringValue
-        self.latitude = json["latitude"].stringValue
-        self.longitude = json["longitude"].stringValue
+    init(placeName: String, latitude: String, longitude: String) {
+        self.placeName = placeName
+        self.latitude = latitude
+        self.longitude = longitude
     }
 }

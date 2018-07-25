@@ -12,6 +12,8 @@ import IQKeyboardManagerSwift
 
 class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
    
+    static var finalLocation = [Location]()
+    
     
     var placeArray = [String]()
     var searchItem: String = ""
@@ -23,6 +25,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     var latitude: String = ""
     var longitude: String = ""
+    
+    var currentTime: Float = 0.0
+    var maxTime: Float = 100
     
     
     var temperatureData: Double!
@@ -64,7 +69,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     @IBOutlet weak var pressureLabel: UILabel!
     
     @IBOutlet weak var settingsButton: UIButton!
-    @IBOutlet weak var searchTextField: UITextField!
+    @IBOutlet weak var searchTextField: WATextField!
     
     @IBOutlet weak var humidityPercentageLabel: UILabel!
     @IBOutlet weak var windMphLabel: UILabel!
@@ -79,6 +84,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     @IBOutlet weak var leadingSearchTextFieldConstraint: NSLayoutConstraint!
     @IBOutlet weak var trailingSearchTextFieldConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var searchProgressView: UIProgressView!
     
     
     let locationManager = CLLocationManager()
@@ -88,8 +94,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        getWeatherComponents()
-      
+        
         searchTextField.delegate = self
         
         searchTableView.delegate = self
@@ -100,9 +105,20 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
+        
+        getWeatherComponents()
+ 
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
+        
+        
         self.searchTableView.allowsSelection = true
+        
+        let metric = UserDefaults.standard.bool(forKey: "metric")
+        print("METRIC: \(metric)")
+        
+        let imperial = UserDefaults.standard.bool(forKey: "imperial")
+        print("IMPERIAL: \(imperial)")
  
         self.searchTableView.reloadData()
     }
@@ -110,9 +126,11 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        
         navigationController?.navigationBar.isHidden = true
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
+        searchProgressView.isHidden = true
         
 
         searchTextField.addImage(direction: .Right, imageName: "search_icon", frame: CGRect(x: -20, y: 0, width: 20, height: 20), backgroundColor: .clear)
@@ -147,13 +165,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windLabel.isHidden = false
             windMphLabel.isHidden = false
         }
-        
+
         self.searchTableView.reloadData()
     }
     
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
         placeArray.removeAll()
         
         self.searchTableView.reloadData()
@@ -178,51 +197,41 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
         
+        if self.searchTableView == tableView {
             cell.cityLabel.text = placeArray[indexPath.row]
             cityName = cell.cityLabel.text
-
+        }
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
+        self.searchTableView.reloadData()
         
-        print("cell Pressed")
         
-        let checkImage = UIImage(named: "square_checkmark_check")
-        cell.imageView?.image = checkImage
         
-        cityLabel.text = cityName
-        UserDefaults.standard.set(cityName, forKey: "Location")
+        print("tasks\([indexPath.row])")
         
         blurEfectView.isHidden = true
         searchTableView.isHidden = true
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-        dismissKeyboard(tapGesture)
-    
+        searchProgressView.isHidden = true
         searchTextField.text = ""
-        
-        
-        let latitude = UserDefaults.standard.string(forKey: "searchLatitude")
-        let longitude = UserDefaults.standard.string(forKey: "searchLongitude")
 
-        WeatherNetworkManager.getWeather(latitude: latitude!, longitude: longitude!, success: { (response) in
+        if indexPath.row >= 0 {
+        let serarchLat = UserDefaults.standard.float(forKey: "searchLat")
+        print("LATTT: \(serarchLat)")
+        let searchLng = UserDefaults.standard.float(forKey: "searchLng")
+        print("LNGGG: \(searchLng)")
+
+
+        WeatherNetworkManager.getWeather(latitude: "\(serarchLat)", longitude: "\(searchLng)", success: { (response) in
             print("DIDSELECTROWresponse: \(response)")
-            
-            
-            let latitude = (response["latitude"].double)!
-            let longitude = (response["longitude"].double)!
-            print("LALO: \(latitude), \(longitude)")
-            
 
             
             if let currentlyData = response["currently"].dictionary {
                 print("Saša's currentlyDATA: \(currentlyData)")
                 
                 let humidityData = (currentlyData["humidity"]?.double)!
-                //print("saša humidity: \(humidityData)")
                 self.humidityLabel.text = "\(humidityData)"
                 
                 
@@ -279,7 +288,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 //print("saša pressure: \(pressureData)")
                 self.pressureLabel.text = "\(pressureData)"
                 
+                
                 self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+                print("TEMP2: \(self.temperatureLabel.text!)")
                 
                 //time
                 let timeData = (currentlyData["time"]?.int)!
@@ -311,13 +322,27 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 
                 self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
                 
-//dissmis Keyboard
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-                self.view.addGestureRecognizer(tapGesture)
-                
             }
+            
+                self.cityLabel.text = self.cityName
+            
+                self.placeArray.append(self.cityLabel.text!)
+                //self.placeArray.insert(self.cityLabel.text!, at: indexPath.row)
+            
+            
+                print("PLAR:\(self.placeArray)")
+                SavingDataHelper.saveData(name: self.placeArray)
+            
+                self.searchTableView.reloadData()
+           
+            
         }) { (error) in
             print(error.localizedDescription)
+            }
+            self.searchTableView.reloadData()
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
+            dismissKeyboard(tapGesture)
         }
     }
     
@@ -330,37 +355,49 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
 
     @objc func textChanged(sender:UITextField) {
-        self.searchTableView.reloadData()
+
+        searchProgressView.isHidden = false
+        searchProgressView.setProgress(currentTime, animated: true)
+        perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
+        
+        
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
-            print("RESPONSE: \(response)")
             
-            let geonameData = (response["geonames"].array)!
-            print("GEONAMEDATA: \(geonameData)")
+            let geoData = (response["geonames"].array)!
+            print("GEODATA: \(geoData)")
             
-            let nameDataDict = (geonameData[0].dictionary)!
-            print("NAMEDATA: \(nameDataDict)")
             
-            let nameDataString = (nameDataDict["name"]?.string)!
-            print("NNNAME: \(nameDataString)")
+            let data = (geoData[0].dictionary)!
+            print("DATAAA: \(data)")
             
-            self.searchItem = nameDataString
-            print("searchITEM: \(self.searchItem)")
+
+            let locationName = (data["name"]?.string)!
+            print("LOCATIONAME: \(locationName)")
             
-            if self.searchItem == self.searchTextField.text {
-                self.placeArray.append(self.searchItem)
-                print("PLACEARRAY: \(self.placeArray)")
+            
+            if locationName == self.searchTextField.text {
+                
+                let searchLatitude = (data["lat"]?.string)!
+                print("SEARCHLAT: \(searchLatitude)")
+            
+                UserDefaults.standard.set(searchLatitude, forKey: "searchLat")
+                UserDefaults.standard.synchronize()
+                
+                let searchLongitude = (data["lng"]?.string)!
+                print("SEARCHLNG: \(searchLongitude)")
+                UserDefaults.standard.set(searchLongitude, forKey: "searchLng")
+                UserDefaults.standard.synchronize()
+                
+                
+                self.searchItem = locationName
+                if self.searchItem == self.searchTextField.text {
+                    self.placeArray.append(self.searchTextField.text!)
+                    print("PLACEARRAY: \(self.placeArray)")
+                    
+                  
+                    self.searchTableView.reloadData()
+                }
             }
-            
-            
-            
-
-            self.latitude = (nameDataDict["lat"]?.string)!
-            print("LATITUDEtextchanged: \(self.latitude)")
-            UserDefaults.standard.set(self.latitude, forKey: "searchLatitude")
-
-            self.longitude = (nameDataDict["lng"]?.string)!
-            print("LONGITUDEtextchanged: \(self.longitude)")
-            UserDefaults.standard.set(self.longitude, forKey: "searchLongitude")
             
             self.searchTableView.reloadData()
         }) { (error) in
@@ -378,6 +415,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         trailingSearchTextFieldConstraint.constant = 20
         settingsButton.isHidden = true
         
+        searchTableView.reloadData()
+
         return true
     }
     
@@ -391,6 +430,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         settingsButton.isHidden = false
         
         searchTextField.text = ""
+        
+        searchTableView.reloadData()
     }
     
     
@@ -412,15 +453,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         print("locations = \(locValue.latitude) \(locValue.longitude)")
 
         
-        lat = String(locValue.latitude)
-        print("LATT: \(lat)")
-        UserDefaults.standard.set(lat, forKey: "currentLat")
+        UserDefaults.standard.set(locValue.latitude, forKey: "currentLat")
+        UserDefaults.standard.synchronize()
+       
+        UserDefaults.standard.set(locValue.longitude, forKey: "currentLng")
+        UserDefaults.standard.synchronize()
         
-        lng = String(locValue.longitude)
-        UserDefaults.standard.set(lng, forKey: "currentLng")
         
         locationManager.stopUpdatingLocation()
-        
     }
 
     
@@ -428,10 +468,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         if Reachability.isConnectedToNetwork(){
             print("Internet Connection Available!")
             
-            let currentLatitude = (UserDefaults.standard.string(forKey: "currentLat"))!
-            let currnetLongitude = (UserDefaults.standard.string(forKey: "currentLng"))!
+            let currentLatitude = (UserDefaults.standard.float(forKey: "currentLat"))
+            UserDefaults.standard.synchronize()
+            let currnetLongitude = (UserDefaults.standard.float(forKey: "currentLng"))
+            UserDefaults.standard.synchronize()
+            print("CO: \(currentLatitude)")
+
             
-            WeatherNetworkManager.getWeather(latitude: currentLatitude, longitude: currnetLongitude, success: { (response) in
+            WeatherNetworkManager.getWeather(latitude: "\(currentLatitude)", longitude: "\(currnetLongitude)", success: { (response) in
                 print("Get weather response: \(response)")
                 
                 
@@ -447,6 +491,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
 
                     let geoData = (response["geonames"].array)!
                     print("GEODATA: \(geoData)")
+                    
 
                     let data = (geoData[0].dictionary)!
                     print("DATAAA: \(data)")
@@ -455,6 +500,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     print("LOCATIONAME: \(locationName)")
 
                     self.cityLabel.text = locationName
+                    self.placeArray.append(self.cityLabel.text!)
+                    
+                    SavingDataHelper.saveData(name: self.placeArray)
+                  
+
+//                    WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(locationLatitude)", longitude: "\(locationLongitude)"))
+                    
                 }, failure: { (error) in
                     print(error.localizedDescription)
                 })
@@ -524,6 +576,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     self.pressureLabel.text = "\(pressureData)"
                     
                     self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+                    print("TEMP1: \(self.temperatureLabel.text!)")
                   
                     //time
                     let timeData = (currentlyData["time"]?.int)!
@@ -566,6 +619,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+        searchTableView.reloadData()
     }
     
 //////////////////
@@ -573,6 +627,25 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
         searchTextField.resignFirstResponder()
+        searchTableView.reloadData()
+    }
+    
+    
+    @objc func updateProgress(){
+        searchTextField.isHidden = false
+        currentTime = currentTime + 1.0
+        searchProgressView.progress = currentTime/maxTime
+        
+        if currentTime < maxTime {
+            perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
+        }
+        else if currentTime == maxTime{
+            print("Stop")
+           
+            searchProgressView.layer.removeAllAnimations()
+            searchProgressView.isHidden = true
+            currentTime = 0.0
+        }
     }
         
     @IBAction func settingsButtonPressed(_ sender: Any) {
@@ -582,6 +655,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     @IBAction func searchTextFieldPressed(_ sender: Any) {
         placeArray = []
+        searchTableView.reloadData()
        
     }
 }

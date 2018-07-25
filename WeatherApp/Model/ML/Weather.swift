@@ -26,17 +26,16 @@ class Weather: NSObject {
     
     
     
-    init(json: JSON) {
-       
-        self.humidity = json["humidity"].doubleValue
-        self.icon = json["icon"].stringValue
-        self.pressure = json["pressure"].doubleValue
-        self.temperature = json["temperature"].doubleValue
-        self.time = json["time"].intValue
-        self.windSpeed = json["windSpeed"].doubleValue
-        self.summary = json["summary"].stringValue
+    init(humidity: Double, icon: String, pressure: Double, temperature: Double, time: Int, windSpeed: Double, summary: String, temperatureMin: Double, temperatureMax: Double){
+        self.humidity = humidity
+        self.icon = icon
+        self.pressure = pressure
+        self.temperature = temperature
+        self.time = time
+        self.windSpeed = windSpeed
+        self.summary = summary
         
-        self.temperatureMin = json["temperatureMin"].doubleValue
-        self.temperatureMax = json["temperatureMax"].doubleValue
+        self.temperatureMin = temperatureMin
+        self.temperatureMax = temperatureMax
     }
 }
