@@ -402,9 +402,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     
-
+    
     @objc func textChanged(sender:UITextField) {
-
+        
         searchProgressView.isHidden = false
         searchProgressView.setProgress(currentTime, animated: true)
         perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
@@ -412,40 +412,41 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
             
-  
+            
             let geoData = (response["geonames"].array)!
             print("GEODATA: \(geoData)")
             
-            
-            let data = (geoData[0].dictionary)!
-            print("DATAAA: \(data)")
-            
-
-            let locationName = (data["name"]?.string)!
-            print("LOCATIONAME: \(locationName)")
-            
-            
-            if locationName == self.searchTextField.text {
-                
-                let searchLatitude = (data["lat"]?.string)!
-                print("SEARCHLAT: \(searchLatitude)")
-            
-                UserDefaults.standard.set(searchLatitude, forKey: "searchLat")
-                UserDefaults.standard.synchronize()
-                
-                let searchLongitude = (data["lng"]?.string)!
-                print("SEARCHLNG: \(searchLongitude)")
-                UserDefaults.standard.set(searchLongitude, forKey: "searchLng")
-                UserDefaults.standard.synchronize()
+            if geoData != [] {
+                let data = (geoData[0].dictionary)!
+                print("DATAAA: \(data)")
                 
                 
-                self.searchItem = locationName
-                if self.searchItem == self.searchTextField.text {
-                    self.placeArray.append(self.searchTextField.text!)
-                    print("PLACEARRAY: \(self.placeArray)")
+                let locationName = (data["name"]?.string)!
+                print("LOCATIONAME: \(locationName)")
+                
+                
+                if locationName == self.searchTextField.text {
                     
-                  
-                    self.searchTableView.reloadData()
+                    let searchLatitude = (data["lat"]?.string)!
+                    print("SEARCHLAT: \(searchLatitude)")
+                    
+                    UserDefaults.standard.set(searchLatitude, forKey: "searchLat")
+                    UserDefaults.standard.synchronize()
+                    
+                    let searchLongitude = (data["lng"]?.string)!
+                    print("SEARCHLNG: \(searchLongitude)")
+                    UserDefaults.standard.set(searchLongitude, forKey: "searchLng")
+                    UserDefaults.standard.synchronize()
+                    
+                    
+                    self.searchItem = locationName
+                    if self.searchItem == self.searchTextField.text {
+                        self.placeArray.append(self.searchTextField.text!)
+                        print("PLACEARRAY: \(self.placeArray)")
+                        
+                        
+                        self.searchTableView.reloadData()
+                    }
                 }
             }
             
@@ -453,6 +454,12 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         }) { (error) in
             print(error.localizedDescription)
         }
+        
+        
+        if searchTextField.text == "" {
+            placeArray.removeAll()
+        }
+        
         self.searchTableView.reloadData()
     }
     

@@ -173,57 +173,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
-//        let checkImage = UIImage(named: "square_checkmark_check")
-//        cell.confirmationButton.setImage(checkImage, for: .normal)
-        
-//        let name = UserDefaults.standard.string(forKey: "searchName")
-//        let latitude = UserDefaults.standard.string(forKey: "searchLatitude")
-//        let longitude = UserDefaults.standard.string(forKey: "searchLongitude")
-        
-        
-//        WeatherNetworkManager.getWeatherByLocationName(latitude: latitude!, longitude: longitude!, success: { (response) in
-//            print(response)
-//
-//            if let currentlyData = response["currently"].dictionary {
-//                print("Saša's currentlyDATA: \(currentlyData)")
-//
-//                self.humidityData = (currentlyData["humidity"]?.double)!
-//
-//                self.iconData = (currentlyData["icon"]?.string)!
-//
-//                self.pressureData = (currentlyData["pressure"]?.double)!
-//
-//                self.tempData = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
-//
-//                //time
-//                self.timeData = (currentlyData["time"]?.int)!
-//
-//                self.windSpeedData = (currentlyData["windSpeed"]?.double)!
-//
-//                self.summaryData = (currentlyData["summary"]?.string)!
-//            }
-//
-//
-//            if let dailyData = response["daily"].dictionary {
-//                let data = (dailyData["data"]?.array)!
-//                let dataDict = (data[7].dictionary)!
-//
-//                self.minTempData = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
-//
-//                self.maxTempData = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
-//
-//
-////                self.weather.append(Weather(humidity: self.humidityData, icon: self.iconData, pressure: self.pressureData, temperature: Double(self.tempData)!, time: self.timeData, windSpeed: self.windSpeedData, summary: self.summaryData, temperatureMin: Double(self.minTempData)!, temperatureMax: Double(self.maxTempData)!))
-////
-////                WAHomeViewController.finalLocation.append(Location(placeName: name!, latitude: latitude!, longitude: longitude!))
-//
-//            }
-//        }) { (error) in
-//            print(error.localizedDescription)
-//        }
-        
+        self.dismiss(animated: true, completion: nil)
         
     }
     
