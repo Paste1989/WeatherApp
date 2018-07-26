@@ -68,6 +68,10 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let locations = (SavingDataHelper.getData())!
         print("LOC: \(locations)")
+        
+        
+        let getChosenLoc = WAHomeViewController.finalLocation
+        print("CHOSENLOC: \(getChosenLoc)")
 
         
         chosenLocations = locations

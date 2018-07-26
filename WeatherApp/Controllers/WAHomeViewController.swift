@@ -12,10 +12,12 @@ import IQKeyboardManagerSwift
 
 class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
    
+    
     static var finalLocation = [Location]()
     
     
     var placeArray = [String]()
+    var chosenLocations = [String]()
     var searchItem: String = ""
     
     var cityName: String!
@@ -221,9 +223,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             }
         }
     
-        
-        placeArray.removeAll()
-        
         self.searchTableView.reloadData()
     }
 
@@ -375,14 +374,16 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             
                 self.cityLabel.text = self.cityName
             
+            if indexPath.row != -100 {
                 self.placeArray.append(self.cityLabel.text!)
-                //self.placeArray.insert(self.cityLabel.text!, at: indexPath.row)
-            
-            
+                self.chosenLocations.append(self.cityLabel.text!)
+                
                 print("PLAR:\(self.placeArray)")
-                SavingDataHelper.saveData(name: self.placeArray)
+                SavingDataHelper.saveData(name: self.chosenLocations)
             
+                
                 self.searchTableView.reloadData()
+            }
            
             
         }) { (error) in
@@ -442,10 +443,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     self.searchItem = locationName
                     if self.searchItem == self.searchTextField.text {
                         self.placeArray.append(self.searchTextField.text!)
+
                         print("PLACEARRAY: \(self.placeArray)")
                         
                         
                         self.searchTableView.reloadData()
+                        
+                        WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(searchLatitude)", longitude: "\(searchLongitude)"))
                     }
                 }
             }
@@ -457,7 +461,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         
         if searchTextField.text == "" {
-            placeArray.removeAll()
+            //placeArray.removeAll()
         }
         
         self.searchTableView.reloadData()
@@ -503,7 +507,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     }
     
     
-///////////////////
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
@@ -563,7 +567,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         
                         SavingDataHelper.saveData(name: self.placeArray)
                         
-                        //                    WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(locationLatitude)", longitude: "\(locationLongitude)"))
                     }else {
                         self.getWeatherComponents()
                     }
