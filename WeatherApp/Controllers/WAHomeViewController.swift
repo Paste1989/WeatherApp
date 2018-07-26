@@ -198,6 +198,22 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     
                     self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
                     print("TEMP1: \(self.temperatureLabel.text!)")
+                    
+                    
+                    if let dailyData = response["daily"].dictionary {
+                        //print("Saša's dailyDATA: \(dailyData)")
+                        
+                        let data = (dailyData["data"]?.array)!
+                        // print("Saša DATA: \(data)")
+                        
+                        let dataDict = (data[7].dictionary)!
+                        //print("Saša temperatureMin: \(dataDict)")
+                        
+                        
+                        self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
+                        
+                        self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
+                    }
                 }
                 
             }) { (error) in
@@ -396,6 +412,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
             
+  
             let geoData = (response["geonames"].array)!
             print("GEODATA: \(geoData)")
             
