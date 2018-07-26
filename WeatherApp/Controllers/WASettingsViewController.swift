@@ -231,6 +231,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         return 50
     }
     
+    
     @IBAction func humidityButtonPressed(_ sender: Any) {
         if WASettingsViewController.humidityPressed == true {
             WASettingsViewController.humidityPressed = false
@@ -328,6 +329,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBAction func doneButtonPressed(_ sender: Any) {
         UserDefaults.standard.synchronize()
+       
         self.dismiss(animated: true, completion: nil)
     }
     

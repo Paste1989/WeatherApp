@@ -105,9 +105,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
-        
-        
-   
+        getWeatherComponents()
  
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
@@ -126,8 +124,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        
+
         navigationController?.navigationBar.isHidden = true
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
@@ -166,6 +163,21 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windLabel.isHidden = false
             windMphLabel.isHidden = false
         }
+        
+        
+        if UserDefaults.standard.bool(forKey: "metric") == true {
+          
+        }
+        else if UserDefaults.standard.bool(forKey: "metric") == false {
+           
+        }
+        
+        if UserDefaults.standard.bool(forKey: "imperial") == true {
+            
+        }
+        else if UserDefaults.standard.bool(forKey: "imperial") == false {
+           
+        }
 
         self.searchTableView.reloadData()
     }
@@ -174,8 +186,26 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        getWeatherComponents()
-
+        let lat = UserDefaults.standard.string(forKey: "searchLat")
+        let lng = UserDefaults.standard.string(forKey: "searchLng")
+        
+        if lat != nil && lng != nil {
+            WeatherNetworkManager.getWeather(latitude: lat!, longitude: lng!, success: { (response) in
+                print(response)
+                
+                if let currentlyData = response["currently"].dictionary {
+                    print("Saša's currentlyDATA: \(currentlyData)")
+                    
+                    self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
+                    print("TEMP1: \(self.temperatureLabel.text!)")
+                }
+                
+            }) { (error) in
+                print(error.localizedDescription)
+            }
+        }
+    
+        
         placeArray.removeAll()
         
         self.searchTableView.reloadData()
@@ -508,7 +538,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         self.placeArray.append(self.cityLabel.text!)
                         
                         SavingDataHelper.saveData(name: self.placeArray)
-                         
+                        
                         //                    WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(locationLatitude)", longitude: "\(locationLongitude)"))
                     }else {
                         self.getWeatherComponents()
