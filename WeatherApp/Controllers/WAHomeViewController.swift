@@ -106,7 +106,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         locationManager.startUpdatingLocation()
         
         
-        getWeatherComponents()
+        
+   
  
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
@@ -172,6 +173,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        getWeatherComponents()
 
         placeArray.removeAll()
         
@@ -489,23 +492,27 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 WeatherNetworkManager.getLocationName(latitude: locationLatitude, longitude: locationLongitude, success: { (response) in
                     print("LOCATIONNAMEresponse: \(response)")
 
+                   
                     let geoData = (response["geonames"].array)!
                     print("GEODATA: \(geoData)")
                     
-
-                    let data = (geoData[0].dictionary)!
-                    print("DATAAA: \(data)")
-
-                    let locationName = (data["name"]?.string)!
-                    print("LOCATIONAME: \(locationName)")
-
-                    self.cityLabel.text = locationName
-                    self.placeArray.append(self.cityLabel.text!)
-                    
-                    SavingDataHelper.saveData(name: self.placeArray)
-                  
-
-//                    WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(locationLatitude)", longitude: "\(locationLongitude)"))
+                    if geoData != [] {
+                        
+                        let data = (geoData[0].dictionary)!
+                        print("DATAAA: \(data)")
+                        
+                        let locationName = (data["name"]?.string)!
+                        print("LOCATIONAME: \(locationName)")
+                        
+                        self.cityLabel.text = locationName
+                        self.placeArray.append(self.cityLabel.text!)
+                        
+                        SavingDataHelper.saveData(name: self.placeArray)
+                         
+                        //                    WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(locationLatitude)", longitude: "\(locationLongitude)"))
+                    }else {
+                        self.getWeatherComponents()
+                    }
                     
                 }, failure: { (error) in
                     print(error.localizedDescription)
