@@ -195,45 +195,46 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         let lat = UserDefaults.standard.string(forKey: "searchLat")
         let lng = UserDefaults.standard.string(forKey: "searchLng")
-        
+
         if lat != nil && lng != nil {
             WeatherNetworkManager.getWeather(latitude: lat!, longitude: lng!, success: { (response) in
                 print(response)
-                
+
                 if let currentlyData = response["currently"].dictionary {
                     print("Saša's currentlyDATA: \(currentlyData)")
-                    
+
                     self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
                     print("TEMP1: \(self.temperatureLabel.text!)")
-                    
-                    
+
+
                     if let dailyData = response["daily"].dictionary {
                         //print("Saša's dailyDATA: \(dailyData)")
-                        
+
                         let data = (dailyData["data"]?.array)!
                         // print("Saša DATA: \(data)")
-                        
+
                         let dataDict = (data[7].dictionary)!
                         //print("Saša temperatureMin: \(dataDict)")
-                        
-                        
+
+
                         self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
-                        
+
                         self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
                     }
                 }
-                
+
             }) { (error) in
                 print(error.localizedDescription)
             }
         }
-        if WAHomeViewController.destinationName != nil {
+
+        if WAHomeViewController.destinationName != nil && WAHomeViewController.la != 0.0 {
             cityLabel.text = (WAHomeViewController.destinationName)!
-           
+
             let la = (WAHomeViewController.la)
             let lo = (WAHomeViewController.lo)
             print("LALOO: \(la), \(lo), \(WAHomeViewController.destinationName)")
-        
+
             getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
         }
     
@@ -285,11 +286,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         let lng = (finalLocation[indexPath.row].longitude)!
         
         self.getWeatherComponents(latitude: "\(lat)", longitude: "\(lng)")
-        
-        
-        SavingDataHelper.saveLocation(location: finalLocation)
-
-        
 
         finalLocation.removeAll()
         self.searchTableView.reloadData()
@@ -344,11 +340,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         print("PLACEARRAY: \(self.placeArray)")
                         
                         
-                        self.searchTableView.reloadData()
+                        
                         
                         self.finalLocation.append(Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!))
                         print("FINAL: \(self.finalLocation)")
                         SavingDataHelper.saveLocation(location: self.finalLocation)
+                        
+                        self.searchTableView.reloadData()
                     }
                 }
             }
@@ -452,16 +450,12 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         
                         self.cityLabel.text = locationName
                         self.chosenLocations.append(self.cityLabel.text!)
-                        
                         SavingDataHelper.saveData(name: self.chosenLocations)
                         
                         self.locationArray.append(Location(placeName: locationName, latitude: locationLatitude, longitude: locationLongitude))
-                        
-                        let newLocationArray = self.locationArray.removingDuplicates()
-                        self.locationArray = newLocationArray
                         print("NEW ONE: \(self.locationArray)")
                         SavingDataHelper.saveLocation(location: self.locationArray)
-                       
+            
                     }else {
                         
                     }

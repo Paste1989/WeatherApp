@@ -92,6 +92,8 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.bodyImageView.image = self.getBodyImage
             self.skyImageView.image = self.getSkyColorImage
         }
+        
+        settingsTableView.reloadData()
 
     }
     
@@ -155,6 +157,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             UserDefaults.standard.set(false, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
+        settingsTableView.reloadData()
     }
     
     
@@ -199,6 +202,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             print("L_: \(location), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
         }
         
+        settingsTableView.reloadData()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -309,4 +313,3 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         self.dismiss(animated: true, completion: nil)
     }
 }
-
