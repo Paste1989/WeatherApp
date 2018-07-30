@@ -11,6 +11,22 @@ import UIKit
 
 class SavingDataHelper {
     
+    class func saveLocation(location: [Location]){
+        let locationData = NSKeyedArchiver.archivedData(withRootObject: location)
+        UserDefaults.standard.set(locationData, forKey: "locations")
+        UserDefaults.standard.synchronize()
+    }
+    
+    class func getLocation() -> [Location]? {
+        let locationData = UserDefaults.standard.data(forKey: "locations")
+        if locationData != nil {
+            if let locations = NSKeyedUnarchiver.unarchiveObject(with: locationData!) as? [Location]{
+                return locations
+            }
+        }
+        return [Location]()
+    }
+    
     class func saveData(name: [String]){
         let nameData = NSKeyedArchiver.archivedData(withRootObject: name)
         UserDefaults.standard.set(nameData, forKey: "locationArray")
@@ -29,12 +45,12 @@ class SavingDataHelper {
     
     class func saveString(name: String){
         let nameData = NSKeyedArchiver.archivedData(withRootObject: name)
-        UserDefaults.standard.set(nameData, forKey: "locationArray")
+        UserDefaults.standard.set(nameData, forKey: "stringArray")
         UserDefaults.standard.synchronize()
     }
     
     class func getString() -> String? {
-        let nameData = UserDefaults.standard.data(forKey: "locationArray")
+        let nameData = UserDefaults.standard.data(forKey: "stringArray")
         if nameData != nil {
             if let names = NSKeyedUnarchiver.unarchiveObject(with: nameData!) as? String{
                 return names

@@ -21,6 +21,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     var getBodyImage: UIImage!
     var getSkyColorImage: UIImage!
     
+    var getChosenLoc = [Location]()
     
     var humidityData: Double = 0.0
     var iconData: String = ""
@@ -43,6 +44,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     static var imperialPressed: Bool!
     
     var chosenLocations: [String] = []
+    var getLocationArray: [Location] = []
     
     
     //MARK: - Outlets
@@ -70,12 +72,17 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         print("LOC: \(locations)")
         
         
-        let getChosenLoc = WAHomeViewController.finalLocation
+        let newLocations = locations.removingDuplicates()
+        
+        chosenLocations = newLocations
+        
+        
+        
+        getChosenLoc = (SavingDataHelper.getLocation())!
         print("CHOSENLOC: \(getChosenLoc)")
-
         
-        chosenLocations = locations
-        
+        getLocationArray = (SavingDataHelper.getLocation())!
+        print("HUHU: \(getLocationArray)")
         
         self.settingsTableView.delegate = self
         self.settingsTableView.dataSource = self
@@ -148,7 +155,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             UserDefaults.standard.set(false, forKey: "metric")
             UserDefaults.standard.synchronize()
         }
-        
     }
     
     
@@ -161,25 +167,41 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
 
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chosenLocations.count
+        return getLocationArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell : SettingsTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SettingsTableViewCell", for: indexPath) as! SettingsTableViewCell
         
+        cell.locationLabel.text = (getLocationArray[indexPath.row].placeName)!
         
-        cell.locationLabel.text = chosenLocations[indexPath.row]
-        let checkImage = UIImage(named: "square_checkmark_check")
-        cell.confirmationButton.setImage(checkImage, for: .normal)
+        if WAHomeViewController.cityName == cell.locationLabel.text {
+            let checkImage = UIImage(named: "square_checkmark_check")
+            cell.confirmationButton.setImage(checkImage, for: .normal)
+        }
         
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.dismiss(animated: true, completion: nil)
+        let destination = (getLocationArray[indexPath.row].placeName)!
+        print("DESTINATION: \(destination)")
         
+        WAHomeViewController.destinationName = destination
+        
+        let location = destination
+        if destination == (getChosenLoc[indexPath.row].placeName) {
+            WAHomeViewController.la = (getChosenLoc[indexPath.row].latitude)!
+            WAHomeViewController.lo = (getChosenLoc[indexPath.row].longitude)!
+            
+            
+            print("L_: \(location), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
+        }
+        
+        self.dismiss(animated: true, completion: nil)
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
@@ -286,7 +308,5 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
        
         self.dismiss(animated: true, completion: nil)
     }
-    
-
-    
 }
+

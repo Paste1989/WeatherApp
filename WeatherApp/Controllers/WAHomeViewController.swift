@@ -13,20 +13,25 @@ import IQKeyboardManagerSwift
 class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
    
     
-    static var finalLocation = [Location]()
+    var finalLocation = [Location]()
+    var locationArray = [Location]()
     
     
     var placeArray = [String]()
     var chosenLocations = [String]()
     var searchItem: String = ""
     
-    var cityName: String!
+    static var cityName: String!
+    static var destinationName: String!
     
     var lat: String = ""
     var lng: String = ""
     
     var latitude: String = ""
     var longitude: String = ""
+    
+    static var la: Double = 0.0
+    static var lo: Double = 0.0
     
     var currentTime: Float = 0.0
     var maxTime: Float = 100
@@ -107,7 +112,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
-        getWeatherComponents()
+
  
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
@@ -126,7 +131,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
         navigationController?.navigationBar.isHidden = true
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
@@ -222,6 +227,15 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 print(error.localizedDescription)
             }
         }
+        if WAHomeViewController.destinationName != nil {
+            cityLabel.text = (WAHomeViewController.destinationName)!
+           
+            let la = (WAHomeViewController.la)
+            let lo = (WAHomeViewController.lo)
+            print("LALOO: \(la), \(lo), \(WAHomeViewController.destinationName)")
+        
+            getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
+        }
     
         self.searchTableView.reloadData()
     }
@@ -234,7 +248,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchTextField.text != "" {
-            return placeArray.count
+            return placeArray.removingDuplicates().count
         }
         else {
             return 0
@@ -246,154 +260,39 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
         
         if self.searchTableView == tableView {
-            cell.cityLabel.text = placeArray[indexPath.row]
-            cityName = cell.cityLabel.text
+           
+                let newArray = placeArray.removingDuplicates()
+                placeArray = newArray
+                
+                cell.cityLabel.text = placeArray[indexPath.row]
+                WAHomeViewController.cityName = cell.cityLabel.text
         }
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.searchTableView.reloadData()
-        
-        
-        
-        print("tasks\([indexPath.row])")
         
         blurEfectView.isHidden = true
         searchTableView.isHidden = true
         searchProgressView.isHidden = true
         searchTextField.text = ""
+        
+        searchTextField.resignFirstResponder()
+        
+        
+        let lat = (finalLocation[indexPath.row].latitude)!
+        let lng = (finalLocation[indexPath.row].longitude)!
+        
+        self.getWeatherComponents(latitude: "\(lat)", longitude: "\(lng)")
+        
+        
+        SavingDataHelper.saveLocation(location: finalLocation)
 
-        if indexPath.row >= 0 {
-        let serarchLat = UserDefaults.standard.float(forKey: "searchLat")
-        print("LATTT: \(serarchLat)")
-        let searchLng = UserDefaults.standard.float(forKey: "searchLng")
-        print("LNGGG: \(searchLng)")
+        
 
-
-        WeatherNetworkManager.getWeather(latitude: "\(serarchLat)", longitude: "\(searchLng)", success: { (response) in
-            print("DIDSELECTROWresponse: \(response)")
-
-            
-            if let currentlyData = response["currently"].dictionary {
-                print("Saša's currentlyDATA: \(currentlyData)")
-                
-                let humidityData = (currentlyData["humidity"]?.double)!
-                self.humidityLabel.text = "\(humidityData)"
-                
-                
-                let iconData = (currentlyData["icon"]?.string)!
-                print("saša icon: \(iconData)")
-                
-                DispatchQueue.main.async {
-                    self.headerImageView.image = UIImage(named: "header_image-\(iconData)")
-                    self.bodyImageView.image = UIImage(named: "body_image-\(iconData)")
-                    
-                    
-                    if iconData == "clear-day" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    if iconData == "clear-night" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
-                    }
-                    if iconData == "cloudy" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    else if iconData == "fog" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0xABD6E9).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    else if iconData == "hail" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    else if iconData == "partly-cloudy-day" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    else if iconData == "partly-cloudy-night" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
-                    }
-                    else if iconData == "rain" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
-                    }
-                    else if iconData == "sleet" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                    else if iconData == "snow" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x0B3A4E).cgColor, UIColor(hex: 0x80D5F3).cgColor)
-                    }
-                    else if iconData == "thunderstorm" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
-                    }
-                    else if iconData == "tornado" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
-                    }
-                    else if iconData == "wind" {
-                        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
-                    }
-                }
-                
-                let pressureData = (currentlyData["pressure"]?.double)!
-                //print("saša pressure: \(pressureData)")
-                self.pressureLabel.text = "\(pressureData)"
-                
-                
-                self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
-                print("TEMP2: \(self.temperatureLabel.text!)")
-                
-                //time
-                let timeData = (currentlyData["time"]?.int)!
-                //print("saša time: \(timeData)")
-                self.bodyImageView.image = UIImage(named: "\(timeData)")
-                
-                
-                let windSpeedData = (currentlyData["windSpeed"]?.double)!
-                //print("saša windSpeed: \(windSpeedData)")
-                self.windLabel.text = "\(windSpeedData)"
-                
-                let summaryData = (currentlyData["summary"]?.string)!
-                print("saša summary: \(summaryData)")
-                self.summaryLabel.text = summaryData
-            }
-            
-            
-            if let dailyData = response["daily"].dictionary {
-                //print("Saša's dailyDATA: \(dailyData)")
-                
-                let data = (dailyData["data"]?.array)!
-                // print("Saša DATA: \(data)")
-                
-                let dataDict = (data[7].dictionary)!
-                //print("Saša temperatureMin: \(dataDict)")
-                
-                
-                self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
-                
-                self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
-                
-            }
-            
-                self.cityLabel.text = self.cityName
-            
-            if indexPath.row != -100 {
-                self.placeArray.append(self.cityLabel.text!)
-                self.chosenLocations.append(self.cityLabel.text!)
-                
-                print("PLAR:\(self.placeArray)")
-                SavingDataHelper.saveData(name: self.chosenLocations)
-            
-                
-                self.searchTableView.reloadData()
-            }
-           
-            
-        }) { (error) in
-            print(error.localizedDescription)
-            }
-            self.searchTableView.reloadData()
-            
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-            dismissKeyboard(tapGesture)
-        }
+        finalLocation.removeAll()
+        self.searchTableView.reloadData()
     }
     
     
@@ -405,14 +304,12 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     @objc func textChanged(sender:UITextField) {
-        
         searchProgressView.isHidden = false
         searchProgressView.setProgress(currentTime, animated: true)
         perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
         
         
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
-            
             
             let geoData = (response["geonames"].array)!
             print("GEODATA: \(geoData)")
@@ -449,7 +346,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         
                         self.searchTableView.reloadData()
                         
-                        WAHomeViewController.finalLocation.append(Location(placeName: locationName, latitude: "\(searchLatitude)", longitude: "\(searchLongitude)"))
+                        self.finalLocation.append(Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!))
+                        print("FINAL: \(self.finalLocation)")
+                        SavingDataHelper.saveLocation(location: self.finalLocation)
                     }
                 }
             }
@@ -461,7 +360,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         
         if searchTextField.text == "" {
-            //placeArray.removeAll()
+            placeArray.removeAll()
         }
         
         self.searchTableView.reloadData()
@@ -514,29 +413,18 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         print("locations = \(locValue.latitude) \(locValue.longitude)")
 
         
-        UserDefaults.standard.set(locValue.latitude, forKey: "currentLat")
-        UserDefaults.standard.synchronize()
-       
-        UserDefaults.standard.set(locValue.longitude, forKey: "currentLng")
-        UserDefaults.standard.synchronize()
-        
+        self.getWeatherComponents(latitude: "\(locValue.latitude)", longitude: "\(locValue.longitude)")
         
         locationManager.stopUpdatingLocation()
     }
 
     
-    func getWeatherComponents(){
+    func getWeatherComponents(latitude:String, longitude:String){
         if Reachability.isConnectedToNetwork(){
             print("Internet Connection Available!")
+        
             
-            let currentLatitude = (UserDefaults.standard.float(forKey: "currentLat"))
-            UserDefaults.standard.synchronize()
-            let currnetLongitude = (UserDefaults.standard.float(forKey: "currentLng"))
-            UserDefaults.standard.synchronize()
-            print("CO: \(currentLatitude)")
-
-            
-            WeatherNetworkManager.getWeather(latitude: "\(currentLatitude)", longitude: "\(currnetLongitude)", success: { (response) in
+            WeatherNetworkManager.getWeather(latitude: latitude, longitude: longitude, success: { (response) in
                 print("Get weather response: \(response)")
                 
                 
@@ -563,14 +451,21 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         print("LOCATIONAME: \(locationName)")
                         
                         self.cityLabel.text = locationName
-                        self.placeArray.append(self.cityLabel.text!)
+                        self.chosenLocations.append(self.cityLabel.text!)
                         
-                        SavingDataHelper.saveData(name: self.placeArray)
+                        SavingDataHelper.saveData(name: self.chosenLocations)
                         
+                        self.locationArray.append(Location(placeName: locationName, latitude: locationLatitude, longitude: locationLongitude))
+                        
+                        let newLocationArray = self.locationArray.removingDuplicates()
+                        self.locationArray = newLocationArray
+                        print("NEW ONE: \(self.locationArray)")
+                        SavingDataHelper.saveLocation(location: self.locationArray)
+                       
                     }else {
-                        self.getWeatherComponents()
+                        
                     }
-                    
+
                 }, failure: { (error) in
                     print(error.localizedDescription)
                 })
