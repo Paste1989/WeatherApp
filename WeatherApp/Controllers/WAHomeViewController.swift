@@ -63,9 +63,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     @IBOutlet weak var temperatureLabel: UILabel!
     @IBOutlet weak var summaryLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var cityLabelTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cityLabelBottomConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var minimalTemperatureLabel: UILabel!
     @IBOutlet weak var maximalTemperatureLabel: UILabel!
+    @IBOutlet weak var lowLabel: UILabel!
+    @IBOutlet weak var highLabel: UILabel!
+    
     
     @IBOutlet weak var humidityImageView: UIImageView!
     @IBOutlet weak var windImageView: UIImageView!
@@ -90,6 +95,45 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     @IBOutlet weak var leadingSearchTextFieldConstraint: NSLayoutConstraint!
     @IBOutlet weak var trailingSearchTextFieldConstraint: NSLayoutConstraint!
+    @IBOutlet weak var searchTextFieldTopConstraint: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
+    
+    
+    
+    @IBOutlet weak var searchTableViewHeightConstraint: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
+    
+    
+    
+    @IBOutlet weak var bodyImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var headerImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var skyColorImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var temperatureLabelTopConstraint: NSLayoutConstraint!
+    
+   
+    @IBOutlet weak var humidityHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var humidityWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var humidityLabelTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var humidityPercentageTrailingConstraint: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var windHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var windWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var windLabelLeadingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var windMphLeadingConstraint: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var pressureHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var pressureWidthConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var humidityTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var pressureLeadingConstraint: NSLayoutConstraint!
+    
     
     @IBOutlet weak var searchProgressView: UIProgressView!
     
@@ -127,6 +171,58 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         print("IMPERIAL: \(imperial)")
  
         self.searchTableView.reloadData()
+        
+        if UIScreen.main.bounds.height == 568 {
+            headerImageHeightConstraint.constant = 200
+            searchTableViewHeightConstraint.constant = 200
+            
+            bodyImageHeightConstraint.constant = 300
+            skyColorImageHeightConstraint.constant = 200
+            temperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 72) as Any as! UIFont
+            temperatureLabelTopConstraint.constant = -90
+            summaryLabel.font = UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            
+            cityLabelBottomConstraint.constant = -85
+            cityLabel.font = UIFont.init(name: "GothamRounded-Book", size: 36) as Any as! UIFont
+            
+            viewTopConstraint.constant = 300
+            
+            minimalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            maximalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            lowLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            highLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityPercentageLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windMphLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureHpaLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            
+            humidityHeightConstraint.constant = 40
+            humidityWidthConstraint.constant = 40
+            humidityLabelTrailingConstraint.constant = -30
+            humidityPercentageTrailingConstraint.constant = 5
+        
+            
+            windHeightConstraint.constant = 40
+            windWidthConstraint.constant = 55
+            windLabelLeadingConstraint.constant = -15
+            windMphLeadingConstraint.constant = 5
+            
+            
+            pressureHeightConstraint.constant = 40
+            pressureWidthConstraint.constant = 40
+            
+            humidityTrailingConstraint.constant = 65
+            pressureLeadingConstraint.constant = 65
+            
+            searchTextFieldTopConstraint.constant = 300
+            scrollViewTopConstraint.constant = -150
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

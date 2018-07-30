@@ -16,6 +16,9 @@ class SettingsTableViewCell: UITableViewCell {
     @IBOutlet weak var confirmationButton: UIButton!
     @IBOutlet weak var locationLabel: UILabel!
     
+    
+    
+    
     //MARK: - LifeCycle
     override func awakeFromNib() {
         super.awakeFromNib()

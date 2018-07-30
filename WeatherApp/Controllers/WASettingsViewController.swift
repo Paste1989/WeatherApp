@@ -64,6 +64,15 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var bodyImageView: UIImageView!
     
     
+    
+    @IBOutlet weak var headerImageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bodyImageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var skyImageViewHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var settingsTableViewHeightConstraint: NSLayoutConstraint!
+    
+    
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +103,14 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         settingsTableView.reloadData()
+        
+        if UIScreen.main.bounds.height == 568 {
+            headerImageViewHeightConstraint.constant = 200
+            skyImageViewHeightConstraint.constant = 200
+            settingsTableViewHeightConstraint.constant = 200
+            bodyImageViewHeightConstraint.constant = 300
+            
+        }
 
     }
     
