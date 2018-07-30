@@ -24,6 +24,8 @@
 		2756D58520EF8F0B0036FA92 /* WANetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58420EF8F0B0036FA92 /* WANetworkManager.swift */; };
 		2756D58720EF8FA20036FA92 /* WAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58620EF8FA20036FA92 /* WAManager.swift */; };
 		2756D58920EFA0750036FA92 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58820EFA0750036FA92 /* Weather.swift */; };
+		276A493A210F9A76002C670F /* Gotham Rounded Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 276A4939210F9A75002C670F /* Gotham Rounded Light.otf */; };
+		276A493C210F9A82002C670F /* Gotham Rounded Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 276A493B210F9A82002C670F /* Gotham Rounded Book.otf */; };
 		277688AE20F0DF9B00E14298 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */; };
 		27DB78A620F3734600AA3617 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */; };
 		27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A720F3E03F00AA3617 /* Extensions.swift */; };
@@ -73,6 +75,8 @@
 		2756D58420EF8F0B0036FA92 /* WANetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WANetworkManager.swift; sourceTree = "<group>"; };
 		2756D58620EF8FA20036FA92 /* WAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAManager.swift; sourceTree = "<group>"; };
 		2756D58820EFA0750036FA92 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		276A4939210F9A75002C670F /* Gotham Rounded Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gotham Rounded Light.otf"; path = "../../../../../Desktop/Gotham Rounded Light/Gotham Rounded Light.otf"; sourceTree = "<group>"; };
+		276A493B210F9A82002C670F /* Gotham Rounded Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Gotham Rounded Book.otf"; path = "../../../../../Desktop/Gotham Rounded Book/Gotham Rounded Book.otf"; sourceTree = "<group>"; };
 		277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		27DB78A720F3E03F00AA3617 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -254,8 +258,18 @@
 			children = (
 				2746D86420EF677600423A46 /* Assets.xcassets */,
 				2746D86920EF677600423A46 /* Info.plist */,
+				276A4938210F9A46002C670F /* Fonts */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		276A4938210F9A46002C670F /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				276A4939210F9A75002C670F /* Gotham Rounded Light.otf */,
+				276A493B210F9A82002C670F /* Gotham Rounded Book.otf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		277688AC20F0DF8300E14298 /* Cells */ = {
@@ -400,7 +414,9 @@
 			files = (
 				270138B420EF7D250029B607 /* Info.plist in Resources */,
 				2746D86820EF677600423A46 /* LaunchScreen.storyboard in Resources */,
+				276A493A210F9A76002C670F /* Gotham Rounded Light.otf in Resources */,
 				2746D86520EF677600423A46 /* Assets.xcassets in Resources */,
+				276A493C210F9A82002C670F /* Gotham Rounded Book.otf in Resources */,
 				2746D86020EF677500423A46 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
