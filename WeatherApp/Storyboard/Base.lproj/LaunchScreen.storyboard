@@ -18,16 +18,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash" translatesAutoresizingMaskIntoConstraints="NO" id="y5g-R0-UFf">
-                                <rect key="frame" x="-100" y="0.0" width="544" height="722"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash Screen" translatesAutoresizingMaskIntoConstraints="NO" id="y5g-R0-UFf">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="y5g-R0-UFf" secondAttribute="trailing" constant="-69" id="CzH-2c-keI"/>
+                            <constraint firstAttribute="trailing" secondItem="y5g-R0-UFf" secondAttribute="trailing" id="CzH-2c-keI"/>
                             <constraint firstItem="y5g-R0-UFf" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="D6y-92-bY3"/>
-                            <constraint firstAttribute="bottom" secondItem="y5g-R0-UFf" secondAttribute="bottom" constant="-55" id="HMS-CX-YIo"/>
-                            <constraint firstItem="y5g-R0-UFf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="-100" id="dev-aS-wCa"/>
+                            <constraint firstAttribute="bottom" secondItem="y5g-R0-UFf" secondAttribute="bottom" id="HMS-CX-YIo"/>
+                            <constraint firstItem="y5g-R0-UFf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Jkb-9u-T72"/>
+                            <constraint firstItem="y5g-R0-UFf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="dev-aS-wCa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -38,6 +39,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="splash" width="561" height="715"/>
+        <image name="Splash Screen" width="375" height="667"/>
     </resources>
 </document>

@@ -123,8 +123,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     @IBOutlet weak var windHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var windWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var windImageTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var windLabelLeadingConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var windMphLeadingConstraint: NSLayoutConstraint!
     
     
@@ -171,57 +171,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         print("IMPERIAL: \(imperial)")
  
         self.searchTableView.reloadData()
-        
-        if UIScreen.main.bounds.height == 568 {
-            headerImageHeightConstraint.constant = 200
-            searchTableViewHeightConstraint.constant = 200
-            
-            bodyImageHeightConstraint.constant = 300
-            skyColorImageHeightConstraint.constant = 200
-            temperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 72) as Any as! UIFont
-            temperatureLabelTopConstraint.constant = -90
-            summaryLabel.font = UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
-            
-            cityLabelBottomConstraint.constant = -85
-            cityLabel.font = UIFont.init(name: "GothamRounded-Book", size: 36) as Any as! UIFont
-            
-            viewTopConstraint.constant = 300
-            
-            minimalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
-            maximalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
-            lowLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            highLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            
-            humidityLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            windLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            pressureLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            
-            humidityPercentageLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            windMphLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            pressureHpaLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
-            
-            
-            humidityHeightConstraint.constant = 40
-            humidityWidthConstraint.constant = 40
-            humidityLabelTrailingConstraint.constant = -30
-            humidityPercentageTrailingConstraint.constant = 5
-        
-            
-            windHeightConstraint.constant = 40
-            windWidthConstraint.constant = 55
-            windLabelLeadingConstraint.constant = -15
-            windMphLeadingConstraint.constant = 5
-            
-            
-            pressureHeightConstraint.constant = 40
-            pressureWidthConstraint.constant = 40
-            
-            humidityTrailingConstraint.constant = 65
-            pressureLeadingConstraint.constant = 65
-            
-            searchTextFieldTopConstraint.constant = 300
-            scrollViewTopConstraint.constant = -150
-        }
+
         
     }
     
@@ -335,6 +285,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         }
     
         self.searchTableView.reloadData()
+        
+        screenBoundsSettings()
     }
 
     override func didReceiveMemoryWarning() {
@@ -669,6 +621,87 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             self.present(alert, animated: true, completion: nil)
         }
         searchTableView.reloadData()
+    }
+    
+    
+    func screenBoundsSettings(){
+        if UIScreen.main.bounds.height == 568 {
+            headerImageHeightConstraint.constant = 200
+            searchTableViewHeightConstraint.constant = 200
+            
+            bodyImageHeightConstraint.constant = 300
+            skyColorImageHeightConstraint.constant = 200
+            temperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 72) as Any as! UIFont
+            temperatureLabelTopConstraint.constant = -90
+            summaryLabel.font = UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            
+            cityLabelBottomConstraint.constant = -85
+            cityLabel.font = UIFont.init(name: "GothamRounded-Book", size: 36) as Any as! UIFont
+            
+            viewTopConstraint.constant = 300
+            
+            minimalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            maximalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            lowLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            highLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityPercentageLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windMphLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureHpaLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityHeightConstraint.constant = 40
+            humidityWidthConstraint.constant = 40
+            humidityLabelTrailingConstraint.constant = -30
+            humidityPercentageTrailingConstraint.constant = 5
+            
+            
+            windHeightConstraint.constant = 40
+            windWidthConstraint.constant = 55
+            windLabelLeadingConstraint.constant = -15
+            windMphLeadingConstraint.constant = 5
+            
+            
+            pressureHeightConstraint.constant = 40
+            pressureWidthConstraint.constant = 40
+            
+            humidityTrailingConstraint.constant = 65
+            pressureLeadingConstraint.constant = 65
+            
+            searchTextFieldTopConstraint.constant = 300
+            scrollViewTopConstraint.constant = -150
+        }
+        else if UIScreen.main.bounds.height == 667 {
+            humidityLabelTrailingConstraint.constant = -40
+            humidityPercentageTrailingConstraint.constant = 10
+            
+            windLabelLeadingConstraint.constant = -20
+            windMphLeadingConstraint.constant = 10
+        }
+        else if UIScreen.main.bounds.height == 736 {
+            searchTextFieldTopConstraint.constant = 350
+            
+            humidityLabelTrailingConstraint.constant = -35
+            humidityPercentageTrailingConstraint.constant = 5
+            
+            windImageTopConstraint.constant = 50
+            windLabelLeadingConstraint.constant = -20
+            windMphLeadingConstraint.constant = 5
+        }
+        else if UIScreen.main.bounds.height == 812 {
+            searchTextFieldTopConstraint.constant = 400
+            viewTopConstraint.constant = 450
+            windImageTopConstraint.constant = 60
+            
+            humidityLabelTrailingConstraint.constant = -35
+            humidityPercentageTrailingConstraint.constant = 5
+            
+            windLabelLeadingConstraint.constant = -20
+            windMphLeadingConstraint.constant = 5
+        }
     }
     
 //////////////////

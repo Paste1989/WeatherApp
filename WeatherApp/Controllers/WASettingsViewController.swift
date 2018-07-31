@@ -71,6 +71,21 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBOutlet weak var settingsTableViewHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var unitsLabeltopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var metricButtonTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var conditionsLabelTopConstraints: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var humidityImageWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var humidityImageHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var windImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var windImageWidthConstraint: NSLayoutConstraint!
+    
+    
+    @IBOutlet weak var pressureImageWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var pressureImageHeightConstraint: NSLayoutConstraint!
+    
     
     
     //MARK: - LifeCycle
@@ -104,14 +119,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         
         settingsTableView.reloadData()
         
-        if UIScreen.main.bounds.height == 568 {
-            headerImageViewHeightConstraint.constant = 200
-            skyImageViewHeightConstraint.constant = 200
-            settingsTableViewHeightConstraint.constant = 200
-            bodyImageViewHeightConstraint.constant = 300
-            
-        }
-
+        screenBoundsSettings()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -226,6 +234,45 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
+    }
+    
+    func  screenBoundsSettings(){
+        if UIScreen.main.bounds.height == 568 {
+            headerImageViewHeightConstraint.constant = 200
+            skyImageViewHeightConstraint.constant = 200
+            settingsTableViewHeightConstraint.constant = 200
+            bodyImageViewHeightConstraint.constant = 350
+            
+            
+            unitsLabeltopConstraint.constant = -10
+            metricButtonTopConstraint.constant = 15
+            conditionsLabelTopConstraints.constant = 25
+            
+            
+            humidityImageWidthConstraint.constant = 45
+            humidityImageHeightConstraint.constant = 45
+            
+            windImageWidthConstraint.constant = 55
+            windImageHeightConstraint.constant = 45
+            
+            pressureImageWidthConstraint.constant = 45
+            pressureImageHeightConstraint.constant = 45
+        }
+        else if UIScreen.main.bounds.height == 667 {
+            unitsLabeltopConstraint.constant = 20
+            metricButtonTopConstraint.constant = 60
+           conditionsLabelTopConstraints.constant = 30
+        }
+        else if UIScreen.main.bounds.height == 736 {
+             unitsLabeltopConstraint.constant = 20
+            metricButtonTopConstraint.constant = 60
+            conditionsLabelTopConstraints.constant = 70
+        }
+        else if UIScreen.main.bounds.height == 812 {
+            unitsLabeltopConstraint.constant = 100
+            metricButtonTopConstraint.constant = 130
+            conditionsLabelTopConstraints.constant = 30
+        }
     }
     
     
