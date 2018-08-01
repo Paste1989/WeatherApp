@@ -13,12 +13,11 @@ import IQKeyboardManagerSwift
 class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
    
     
-    var finalLocation = [Location]()
-    var locationArray = [Location]()
+    var searchVCLocationsToShow = [Location]()
+    var settingsVCLocationsToShow = [Location]()
+
+    var showSearchLocationsArray = [String]()
     
-    
-    var placeArray = [String]()
-    var chosenLocations = [String]()
     var searchItem: String = ""
     
     static var cityName: String!
@@ -243,49 +242,20 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         let lng = UserDefaults.standard.string(forKey: "searchLng")
 
         if lat != nil && lng != nil {
-            WeatherNetworkManager.getWeather(latitude: lat!, longitude: lng!, success: { (response) in
-                print(response)
-
-                if let currentlyData = response["currently"].dictionary {
-                    print("Saša's currentlyDATA: \(currentlyData)")
-
-                    self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
-                    print("TEMP1: \(self.temperatureLabel.text!)")
-
-
-                    if let dailyData = response["daily"].dictionary {
-                        //print("Saša's dailyDATA: \(dailyData)")
-
-                        let data = (dailyData["data"]?.array)!
-                        // print("Saša DATA: \(data)")
-
-                        let dataDict = (data[7].dictionary)!
-                        //print("Saša temperatureMin: \(dataDict)")
-
-
-                        self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
-
-                        self.maximalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMax"]?.double)!)
-                    }
-                }
-
-            }) { (error) in
-                print(error.localizedDescription)
-            }
+            
+            getWeatherComponents(latitude: lat!, longitude: lng!)
         }
-
+        
         if WAHomeViewController.destinationName != nil && WAHomeViewController.la != 0.0 {
+            
             cityLabel.text = (WAHomeViewController.destinationName)!
-
             let la = (WAHomeViewController.la)
             let lo = (WAHomeViewController.lo)
-            print("LALOO: \(la), \(lo), \(WAHomeViewController.destinationName)")
+            print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
 
             getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
         }
-    
-        self.searchTableView.reloadData()
-        
+
         screenBoundsSettings()
     }
 
@@ -297,7 +267,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchTextField.text != "" {
-            return placeArray.removingDuplicates().count
+            return showSearchLocationsArray.removingDuplicates().count
         }
         else {
             return 0
@@ -310,12 +280,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         if self.searchTableView == tableView {
            
-                let newArray = placeArray.removingDuplicates()
-                placeArray = newArray
+                let newArray = showSearchLocationsArray.removingDuplicates()
+                showSearchLocationsArray = newArray
                 
-                cell.cityLabel.text = placeArray[indexPath.row]
+                cell.cityLabel.text = showSearchLocationsArray[indexPath.row]
                 WAHomeViewController.cityName = cell.cityLabel.text
         }
+
         return cell
     }
     
@@ -329,13 +300,22 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         searchTextField.resignFirstResponder()
         
-        
-        let lat = (finalLocation[indexPath.row].latitude)!
-        let lng = (finalLocation[indexPath.row].longitude)!
+        let name = (searchVCLocationsToShow[indexPath.row].placeName)!
+        let lat = (searchVCLocationsToShow[indexPath.row].latitude)!
+        let lng = (searchVCLocationsToShow[indexPath.row].longitude)!
         
         self.getWeatherComponents(latitude: "\(lat)", longitude: "\(lng)")
+        
+       
+        let loc = Location(placeName: name, latitude: lat, longitude: lng)
+        if !(SavingDataHelper.getLocation()?.contains(loc))!{
+            settingsVCLocationsToShow.append(loc)
+            SavingDataHelper.saveLocation(location: settingsVCLocationsToShow)
+            
+            print("SAVED: \(settingsVCLocationsToShow)")
+        }
 
-        finalLocation.removeAll()
+        searchVCLocationsToShow.removeAll()
         self.searchTableView.reloadData()
     }
     
@@ -383,22 +363,17 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     
                     self.searchItem = locationName
                     if self.searchItem == self.searchTextField.text {
-                        self.placeArray.append(self.searchTextField.text!)
+                        self.showSearchLocationsArray.append(self.searchTextField.text!)
 
-                        print("PLACEARRAY: \(self.placeArray)")
-                        
-                        
-                        
-                        
-                        self.finalLocation.append(Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!))
-                        print("FINAL: \(self.finalLocation)")
-                        SavingDataHelper.saveLocation(location: self.finalLocation)
-                        
+                        print("PLACEARRAY: \(self.showSearchLocationsArray)")
+
+                        self.searchVCLocationsToShow.append(Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!))
+                        print("FINAL: \(self.searchVCLocationsToShow)")
+
                         self.searchTableView.reloadData()
                     }
                 }
             }
-            
             self.searchTableView.reloadData()
         }) { (error) in
             print(error.localizedDescription)
@@ -406,7 +381,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         
         if searchTextField.text == "" {
-            placeArray.removeAll()
+            showSearchLocationsArray.removeAll()
         }
         
         self.searchTableView.reloadData()
@@ -497,13 +472,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         print("LOCATIONAME: \(locationName)")
                         
                         self.cityLabel.text = locationName
-                        self.chosenLocations.append(self.cityLabel.text!)
-                        SavingDataHelper.saveData(name: self.chosenLocations)
                         
-                        self.locationArray.append(Location(placeName: locationName, latitude: locationLatitude, longitude: locationLongitude))
-                        print("NEW ONE: \(self.locationArray)")
-                        SavingDataHelper.saveLocation(location: self.locationArray)
-            
                     }else {
                         
                     }
@@ -703,6 +672,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windMphLeadingConstraint.constant = 5
         }
     }
+
     
 //////////////////
     
@@ -736,7 +706,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     @IBAction func searchTextFieldPressed(_ sender: Any) {
-        placeArray = []
+        showSearchLocationsArray = []
         searchTableView.reloadData()
        
     }

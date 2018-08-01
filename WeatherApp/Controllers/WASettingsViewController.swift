@@ -21,8 +21,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     var getBodyImage: UIImage!
     var getSkyColorImage: UIImage!
     
-    var getChosenLoc = [Location]()
-    
     var humidityData: Double = 0.0
     var iconData: String = ""
     var pressureData: Double = 0.0
@@ -43,7 +41,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     static var metricPressed: Bool!
     static var imperialPressed: Bool!
     
-    var chosenLocations: [String] = []
     var getLocationArray: [Location] = []
     
     
@@ -92,22 +89,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let locations = (SavingDataHelper.getData())!
-        print("LOC: \(locations)")
-        
-        
-        let newLocations = locations.removingDuplicates()
-        
-        chosenLocations = newLocations
-        
-        
-        
-        getChosenLoc = (SavingDataHelper.getLocation())!
-        print("CHOSENLOC: \(getChosenLoc)")
-        
-        getLocationArray = (SavingDataHelper.getLocation())!
-        print("HUHU: \(getLocationArray)")
-        
+
         self.settingsTableView.delegate = self
         self.settingsTableView.dataSource = self
         
@@ -117,13 +99,18 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.skyImageView.image = self.getSkyColorImage
         }
         
+       
         settingsTableView.reloadData()
         
         screenBoundsSettings()
     }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        getLocationArray = (SavingDataHelper.getLocation())!
+        print("HUHU: \(getLocationArray)")
 
         navigationController?.navigationBar.isHidden = true
         
@@ -213,19 +200,15 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let destination = (getLocationArray[indexPath.row].placeName)!
-        print("DESTINATION: \(destination)")
+        print("iindex: \(indexPath.row)")
+
+        WAHomeViewController.destinationName = (getLocationArray[indexPath.row].placeName!)
+        WAHomeViewController.la = (getLocationArray[indexPath.row].latitude)!
+        WAHomeViewController.lo = (getLocationArray[indexPath.row].longitude)!
         
-        WAHomeViewController.destinationName = destination
         
-        let location = destination
-        if destination == (getChosenLoc[indexPath.row].placeName) {
-            WAHomeViewController.la = (getChosenLoc[indexPath.row].latitude)!
-            WAHomeViewController.lo = (getChosenLoc[indexPath.row].longitude)!
-            
-            
-            print("L_: \(location), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
-        }
+        print("L_: \(WAHomeViewController.destinationName), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
+
         
         settingsTableView.reloadData()
         self.dismiss(animated: true, completion: nil)

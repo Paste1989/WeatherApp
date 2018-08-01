@@ -10,7 +10,11 @@ import Foundation
 import UIKit
 import SwiftyJSON
 
-class Location: NSObject, NSCoding {
+class Location: NSObject, NSCoding{
+    static func == (lhs: Location, rhs: Location) -> Bool {
+        return lhs.placeName == rhs.placeName && lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+    
    
     var placeName: String!
     var latitude: Double!
@@ -41,4 +45,7 @@ class Location: NSObject, NSCoding {
         guard let placeName = aDecoder.decodeObject(forKey: Key.placeName.rawValue) as? String else { return nil }
         self.init(placeName: placeName, latitude: latitude, longitude: longitude)
     }
+    
+
+    
 }
