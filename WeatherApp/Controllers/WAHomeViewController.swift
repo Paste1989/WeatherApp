@@ -15,8 +15,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     var searchVCLocationsToShow = [Location]()
     var settingsVCLocationsToShow = [Location]()
-
-    var showSearchLocationsArray = [String]()
     
     var searchItem: String = ""
     
@@ -98,7 +96,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     @IBOutlet weak var scrollViewTopConstraint: NSLayoutConstraint!
-    
     
     
     @IBOutlet weak var searchTableViewHeightConstraint: NSLayoutConstraint!
@@ -267,7 +264,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchTextField.text != "" {
-            return showSearchLocationsArray.removingDuplicates().count
+            return searchVCLocationsToShow.count
         }
         else {
             return 0
@@ -280,10 +277,10 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         if self.searchTableView == tableView {
            
-                let newArray = showSearchLocationsArray.removingDuplicates()
-                showSearchLocationsArray = newArray
+                let placeName = (searchVCLocationsToShow[indexPath.row].placeName)!
+                //showSearchLocationsArray = [placeNameArray]
                 
-                cell.cityLabel.text = showSearchLocationsArray[indexPath.row]
+                cell.cityLabel.text = placeName
                 WAHomeViewController.cityName = cell.cityLabel.text
         }
 
@@ -300,21 +297,24 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         searchTextField.resignFirstResponder()
         
+        print("UUU: \(searchVCLocationsToShow)")
+        
         let name = (searchVCLocationsToShow[indexPath.row].placeName)!
         let lat = (searchVCLocationsToShow[indexPath.row].latitude)!
         let lng = (searchVCLocationsToShow[indexPath.row].longitude)!
         
         self.getWeatherComponents(latitude: "\(lat)", longitude: "\(lng)")
         
-       
+        
         let loc = Location(placeName: name, latitude: lat, longitude: lng)
-        if !(SavingDataHelper.getLocation()?.contains(loc))!{
+        let locations = (SavingDataHelper.getLocation())!
+        print("LLL: \(locations)")
+        
+        if !(locations.contains(loc)){
             settingsVCLocationsToShow.append(loc)
             SavingDataHelper.saveLocation(location: settingsVCLocationsToShow)
-            
-            print("SAVED: \(settingsVCLocationsToShow)")
         }
-
+       
         searchVCLocationsToShow.removeAll()
         self.searchTableView.reloadData()
     }
@@ -363,12 +363,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     
                     self.searchItem = locationName
                     if self.searchItem == self.searchTextField.text {
-                        self.showSearchLocationsArray.append(self.searchTextField.text!)
-
-                        print("PLACEARRAY: \(self.showSearchLocationsArray)")
-
-                        self.searchVCLocationsToShow.append(Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!))
-                        print("FINAL: \(self.searchVCLocationsToShow)")
+                        
+                        let loc = Location(placeName: locationName, latitude: Double(searchLatitude)!, longitude: Double(searchLongitude)!)
+                        if !(SavingDataHelper.getLocation()?.contains(loc))!{
+                            self.searchVCLocationsToShow.append(loc)
+                            SavingDataHelper.saveLocation(location: self.searchVCLocationsToShow)
+                            
+                           //print("SAVED: \(self.searchVCLocationsToShow)")
+                        }
 
                         self.searchTableView.reloadData()
                     }
@@ -381,7 +383,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         
         if searchTextField.text == "" {
-            showSearchLocationsArray.removeAll()
+            searchVCLocationsToShow.removeAll()
         }
         
         self.searchTableView.reloadData()
@@ -706,7 +708,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     @IBAction func searchTextFieldPressed(_ sender: Any) {
-        showSearchLocationsArray = []
         searchTableView.reloadData()
        
     }
