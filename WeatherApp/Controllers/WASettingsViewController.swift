@@ -32,7 +32,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     var minTempData: String = ""
     var maxTempData: String = ""
     
-
+    
     weak var delegate : WASettingsViewControllerDelegate?
     
     static var humidityPressed: Bool!
@@ -89,7 +89,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
+        
         self.settingsTableView.delegate = self
         self.settingsTableView.dataSource = self
         
@@ -99,19 +99,19 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.skyImageView.image = self.getSkyColorImage
         }
         
-       
+        
         settingsTableView.reloadData()
         
         screenBoundsSettings()
     }
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         getLocationArray = (SavingDataHelper.getLocation())!
         print("HUHU: \(getLocationArray)")
-
+        
         navigationController?.navigationBar.isHidden = true
         
         if UserDefaults.standard.bool(forKey: "pressure") == true {
@@ -124,7 +124,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             let checkImage = UIImage(named: "checkmark_uncheck")
             pressureButton.setImage(checkImage, for: .normal)
         }
-
+        
         if UserDefaults.standard.bool(forKey: "wind") == false {
             WASettingsViewController.windPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
@@ -136,7 +136,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             windButton.setImage(checkImage, for: .normal)
         }
         
-
+        
         if UserDefaults.standard.bool(forKey: "humidity") == false {
             WASettingsViewController.humidityPressed = false
             let uncheckImage = UIImage(named: "checkmark_uncheck")
@@ -173,13 +173,13 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     //MARK: - Actions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return getLocationArray.count
@@ -190,9 +190,10 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         
         cell.locationLabel.text = (getLocationArray[indexPath.row].placeName)!
         
-        if WAHomeViewController.cityName == cell.locationLabel.text {
+        if cell.locationLabel.text == WAHomeViewController.cityName {
             let checkImage = UIImage(named: "square_checkmark_check")
             cell.confirmationButton.setImage(checkImage, for: .normal)
+            cell.confirmationButton.isEnabled = false
         }
         
         return cell
@@ -201,14 +202,14 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("iindex: \(indexPath.row)")
-
+        
         WAHomeViewController.destinationName = (getLocationArray[indexPath.row].placeName!)
         WAHomeViewController.la = (getLocationArray[indexPath.row].latitude)!
         WAHomeViewController.lo = (getLocationArray[indexPath.row].longitude)!
         
         
         print("L_: \(WAHomeViewController.destinationName), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
-
+        
         
         settingsTableView.reloadData()
         self.dismiss(animated: true, completion: nil)
@@ -218,6 +219,17 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
+    
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            
+            getLocationArray.remove(at: indexPath.row)
+            settingsTableView.reloadData()
+            SavingDataHelper.saveLocation(location: self.getLocationArray)
+        }
+    }
+    
     
     func  screenBoundsSettings(){
         if UIScreen.main.bounds.height == 568 {
@@ -244,10 +256,10 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         else if UIScreen.main.bounds.height == 667 {
             unitsLabeltopConstraint.constant = 20
             metricButtonTopConstraint.constant = 60
-           conditionsLabelTopConstraints.constant = 30
+            conditionsLabelTopConstraints.constant = 30
         }
         else if UIScreen.main.bounds.height == 736 {
-             unitsLabeltopConstraint.constant = 20
+            unitsLabeltopConstraint.constant = 20
             metricButtonTopConstraint.constant = 60
             conditionsLabelTopConstraints.constant = 70
         }
@@ -304,15 +316,15 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         print("metricPressed")
         WASettingsViewController.metricPressed = true
         WASettingsViewController.imperialPressed = false
-            let uncheckImage = UIImage(named: "square_checkmark_uncheck")
-            imperialButton.setImage(uncheckImage, for: .normal)
-
-            let checkImage = UIImage(named: "square_checkmark_check")
-            metricButton.setImage(checkImage, for: .normal)
-
-            UserDefaults.standard.set(true, forKey: "metric")
-            UserDefaults.standard.set(false, forKey: "imperial")
-            UserDefaults.standard.synchronize()
+        let uncheckImage = UIImage(named: "square_checkmark_uncheck")
+        imperialButton.setImage(uncheckImage, for: .normal)
+        
+        let checkImage = UIImage(named: "square_checkmark_check")
+        metricButton.setImage(checkImage, for: .normal)
+        
+        UserDefaults.standard.set(true, forKey: "metric")
+        UserDefaults.standard.set(false, forKey: "imperial")
+        UserDefaults.standard.synchronize()
     }
     
     
@@ -323,16 +335,16 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         WASettingsViewController.metricPressed = false
         let uncheckImage = UIImage(named: "square_checkmark_uncheck")
         metricButton.setImage(uncheckImage, for: .normal)
-
+        
         let checkImage = UIImage(named: "square_checkmark_check")
         imperialButton.setImage(checkImage, for: .normal)
-
+        
         UserDefaults.standard.set(true, forKey: "imperial")
         UserDefaults.standard.set(false, forKey: "metric")
         UserDefaults.standard.synchronize()
     }
     
-
+    
     @IBAction func pressureButtonPressed(_ sender: Any) {
         if WASettingsViewController.pressurePressed == true {
             WASettingsViewController.pressurePressed = false
@@ -356,7 +368,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     @IBAction func doneButtonPressed(_ sender: Any) {
         UserDefaults.standard.synchronize()
-       
+        
         self.dismiss(animated: true, completion: nil)
     }
 }

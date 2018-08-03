@@ -25,7 +25,7 @@ struct WeatherNetworkManager {
         let headers: HTTPHeaders = [
             "Accept": "application/json"
         ]
-      
+        
         
         WASyncManager.request(url: baseURL+"\(latitude),\(longitude)", method: .get, parameters: nil, header: headers, success: { (response) in
             success(response)
@@ -54,9 +54,9 @@ struct WeatherNetworkManager {
     static func searchLocation(name_startsWith: String, success: @escaping (JSON) -> Void, failure: @escaping(Error) -> Void) {
         let headers: HTTPHeaders = [
             "Accept": "application/json"]
-       
+        
         let filterURL = geoURL.replacingOccurrences(of: "#CHANGE#", with: name_startsWith)
-   
+        
         WASyncManager.request(url: filterURL, method: .get, parameters: nil, header: headers, success: { (response) in
             success(response)
             print("response: \(response)")

@@ -11,7 +11,7 @@ import CoreLocation
 import IQKeyboardManagerSwift
 
 class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
-   
+    
     
     var searchVCLocationsToShow = [Location]()
     var settingsVCLocationsToShow = [Location]()
@@ -44,7 +44,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     var maxTempCelsius: Int!
     
     var headerImageArray: [String] = ["header_image-clear-day", "header_image-clear-night", "header_image-cloudy", "header_image-fog", "header_image-hail", "header_image-partly-cloudy-day", "header_image-partly-cloudy-night", "header_image-rain", "header_image-sleet", "header_image-snow", "header_image-thunderstorm", "header_image-tornado", "header_image-wind"]
-   
+    
     
     var bodyImageArray: [String] = ["body_image-clear-day", "body_image-clear-night", "body_image-cloudy", "body_image-fog", "body_image-hail", "body_image-partly-cloudy-day", "body_image-partly-cloudy-night", "body_image-rain", "body_image-sleet", "body_image-snow", "body_image-thunderstorm", "body_image-tornado", "body_image-wind"]
     
@@ -110,7 +110,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     @IBOutlet weak var skyColorImageHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var temperatureLabelTopConstraint: NSLayoutConstraint!
     
-   
+    
     @IBOutlet weak var humidityHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var humidityWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var humidityLabelTrailingConstraint: NSLayoutConstraint!
@@ -136,7 +136,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     let locationManager = CLLocationManager()
     
-
+    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,8 +152,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
         
-
- 
+        
+        
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
         
@@ -165,9 +165,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         let imperial = UserDefaults.standard.bool(forKey: "imperial")
         print("IMPERIAL: \(imperial)")
- 
+        
         self.searchTableView.reloadData()
-
+        
         
     }
     
@@ -179,7 +179,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         blurEfectView.isHidden = true
         searchProgressView.isHidden = true
         
-
+        
         searchTextField.addImage(direction: .Right, imageName: "search_icon", frame: CGRect(x: -20, y: 0, width: 20, height: 20), backgroundColor: .clear)
         
         if UserDefaults.standard.bool(forKey: "pressure") == false {
@@ -215,19 +215,19 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         
         if UserDefaults.standard.bool(forKey: "metric") == true {
-          
+            
         }
         else if UserDefaults.standard.bool(forKey: "metric") == false {
-           
+            
         }
         
         if UserDefaults.standard.bool(forKey: "imperial") == true {
             
         }
         else if UserDefaults.standard.bool(forKey: "imperial") == false {
-           
+            
         }
-
+        
         self.searchTableView.reloadData()
     }
     
@@ -237,7 +237,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         let lat = UserDefaults.standard.string(forKey: "searchLat")
         let lng = UserDefaults.standard.string(forKey: "searchLng")
-
+        
         if lat != nil && lng != nil {
             
             getWeatherComponents(latitude: lat!, longitude: lng!)
@@ -249,13 +249,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             let la = (WAHomeViewController.la)
             let lo = (WAHomeViewController.lo)
             print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
-
+            
             getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
         }
-
+        
         screenBoundsSettings()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -276,14 +276,18 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         let cell : SearchTableViewCell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as! SearchTableViewCell
         
         if self.searchTableView == tableView {
-           
-                let placeName = (searchVCLocationsToShow[indexPath.row].placeName)!
-                //showSearchLocationsArray = [placeNameArray]
-                
-                cell.cityLabel.text = placeName
-                WAHomeViewController.cityName = cell.cityLabel.text
+            
+            let placeName = (searchVCLocationsToShow[indexPath.row].placeName)!
+            
+            cell.cityLabel.text = placeName
+            
+            var string = placeName
+            string = String(string.prefix(1))
+            cell.confirmationButton.setTitle(string, for: .normal)
+            
+            WAHomeViewController.cityName = cell.cityLabel.text
         }
-
+        
         return cell
     }
     
@@ -314,7 +318,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             settingsVCLocationsToShow.append(loc)
             SavingDataHelper.saveLocation(location: settingsVCLocationsToShow)
         }
-       
+        
         searchVCLocationsToShow.removeAll()
         self.searchTableView.reloadData()
     }
@@ -369,9 +373,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                             self.searchVCLocationsToShow.append(loc)
                             SavingDataHelper.saveLocation(location: self.searchVCLocationsToShow)
                             
-                           //print("SAVED: \(self.searchVCLocationsToShow)")
+                            //print("SAVED: \(self.searchVCLocationsToShow)")
                         }
-
+                        
                         self.searchTableView.reloadData()
                     }
                 }
@@ -399,7 +403,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         settingsButton.isHidden = true
         
         searchTableView.reloadData()
-
+        
         return true
     }
     
@@ -429,23 +433,23 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     }
     
     
-
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
         print("locations = \(locValue.latitude) \(locValue.longitude)")
-
+        
         
         self.getWeatherComponents(latitude: "\(locValue.latitude)", longitude: "\(locValue.longitude)")
         
         locationManager.stopUpdatingLocation()
     }
-
+    
     
     func getWeatherComponents(latitude:String, longitude:String){
         if Reachability.isConnectedToNetwork(){
             print("Internet Connection Available!")
-        
+            
             
             WeatherNetworkManager.getWeather(latitude: latitude, longitude: longitude, success: { (response) in
                 print("Get weather response: \(response)")
@@ -460,8 +464,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 
                 WeatherNetworkManager.getLocationName(latitude: locationLatitude, longitude: locationLongitude, success: { (response) in
                     print("LOCATIONNAMEresponse: \(response)")
-
-                   
+                    
+                    
                     let geoData = (response["geonames"].array)!
                     print("GEODATA: \(geoData)")
                     
@@ -478,13 +482,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     }else {
                         
                     }
-
+                    
                 }, failure: { (error) in
                     print(error.localizedDescription)
                 })
                 
-
-            
+                
+                
                 if let currentlyData = response["currently"].dictionary {
                     print("Saša's currentlyDATA: \(currentlyData)")
                     
@@ -506,40 +510,40 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         if iconData == "clear-night" {
-                           self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
                         }
                         if iconData == "cloudy" {
-                           self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         else if iconData == "fog" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0xABD6E9).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0xABD6E9).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         else if iconData == "hail" {
                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         else if iconData == "partly-cloudy-day" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         else if iconData == "partly-cloudy-night" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x044663).cgColor, UIColor(hex: 0x234880).cgColor)
                         }
                         else if iconData == "rain" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
                         }
                         else if iconData == "sleet" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                         else if iconData == "snow" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x0B3A4E).cgColor, UIColor(hex: 0x80D5F3).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x0B3A4E).cgColor, UIColor(hex: 0x80D5F3).cgColor)
                         }
                         else if iconData == "thunderstorm" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
                         }
                         else if iconData == "tornado" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x15587B).cgColor, UIColor(hex: 0x4A75A2).cgColor)
                         }
                         else if iconData == "wind" {
-                             self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
+                            self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
                         }
                     }
                     
@@ -549,12 +553,12 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     
                     self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
                     print("TEMP1: \(self.temperatureLabel.text!)")
-                  
+                    
                     //time
                     let timeData = (currentlyData["time"]?.int)!
                     //print("saša time: \(timeData)")
                     self.bodyImageView.image = UIImage(named: "\(timeData)")
-  
+                    
                     
                     let windSpeedData = (currentlyData["windSpeed"]?.double)!
                     //print("saša windSpeed: \(windSpeedData)")
@@ -583,7 +587,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             }) { (error) in
                 print(error.localizedDescription)
             }
-
+            
         }else{
             print("Internet Connection not Available!")
             
@@ -674,9 +678,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windMphLeadingConstraint.constant = 5
         }
     }
-
     
-//////////////////
+    
+    //////////////////
     
     
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
@@ -695,13 +699,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         }
         else if currentTime == maxTime{
             print("Stop")
-           
+            
             searchProgressView.layer.removeAllAnimations()
             searchProgressView.isHidden = true
             currentTime = 0.0
         }
     }
-        
+    
     @IBAction func settingsButtonPressed(_ sender: Any) {
         performSegue(withIdentifier: "settingsSegue", sender: self)
     }
@@ -709,7 +713,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     @IBAction func searchTextFieldPressed(_ sender: Any) {
         searchTableView.reloadData()
-       
+        
     }
 }
 

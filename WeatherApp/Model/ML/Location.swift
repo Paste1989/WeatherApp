@@ -45,7 +45,4 @@ class Location: NSObject, NSCoding{
         guard let placeName = aDecoder.decodeObject(forKey: Key.placeName.rawValue) as? String else { return nil }
         self.init(placeName: placeName, latitude: latitude, longitude: longitude)
     }
-    
-
-    
 }

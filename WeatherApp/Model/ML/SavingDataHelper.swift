@@ -27,6 +27,11 @@ class SavingDataHelper {
         return [Location]()
     }
     
+    static func deleteLocationData() {
+        UserDefaults.standard.set(nil, forKey: "locations")
+        UserDefaults.standard.synchronize()
+    }
+    
     class func saveData(name: [String]){
         let nameData = NSKeyedArchiver.archivedData(withRootObject: name)
         UserDefaults.standard.set(nameData, forKey: "locationArray")
@@ -58,6 +63,5 @@ class SavingDataHelper {
         }
         return String()
     }
-    
-    
+
 }

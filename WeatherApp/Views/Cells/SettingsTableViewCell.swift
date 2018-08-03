@@ -11,28 +11,27 @@ import UIKit
 class SettingsTableViewCell: UITableViewCell {
     
     var isPressed: Bool!
-
+    
     //MARK: - Outlets
     @IBOutlet weak var confirmationButton: UIButton!
     @IBOutlet weak var locationLabel: UILabel!
     
     
     
-    
     //MARK: - LifeCycle
     override func awakeFromNib() {
         super.awakeFromNib()
-      
+        
         isPressed = false
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
-
+    
     //MARK: - Actions
     @IBAction func confirmationButtonPressed(_ sender: Any) {
         if isPressed == true {
