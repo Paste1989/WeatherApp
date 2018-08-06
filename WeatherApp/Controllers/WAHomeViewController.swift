@@ -167,8 +167,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         print("IMPERIAL: \(imperial)")
         
         self.searchTableView.reloadData()
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -212,22 +210,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windLabel.isHidden = false
             windMphLabel.isHidden = false
         }
-        
-        
-        if UserDefaults.standard.bool(forKey: "metric") == true {
-            
-        }
-        else if UserDefaults.standard.bool(forKey: "metric") == false {
-            
-        }
-        
-        if UserDefaults.standard.bool(forKey: "imperial") == true {
-            
-        }
-        else if UserDefaults.standard.bool(forKey: "imperial") == false {
-            
-        }
-        
         self.searchTableView.reloadData()
     }
     
@@ -248,7 +230,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             cityLabel.text = (WAHomeViewController.destinationName)!
             let la = (WAHomeViewController.la)
             let lo = (WAHomeViewController.lo)
-            print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
+            //print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
             
             getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
         }
@@ -301,7 +283,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         searchTextField.resignFirstResponder()
         
-        print("UUU: \(searchVCLocationsToShow)")
+        //print("SearchVCLocations: \(searchVCLocationsToShow)")
         
         let name = (searchVCLocationsToShow[indexPath.row].placeName)!
         let lat = (searchVCLocationsToShow[indexPath.row].latitude)!
@@ -312,7 +294,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         let loc = Location(placeName: name, latitude: lat, longitude: lng)
         let locations = (SavingDataHelper.getLocation())!
-        print("LLL: \(locations)")
+        //print("LLL: \(locations)")
         
         if !(locations.contains(loc)){
             settingsVCLocationsToShow.append(loc)
@@ -330,7 +312,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     
-    
     @objc func textChanged(sender:UITextField) {
         searchProgressView.isHidden = false
         searchProgressView.setProgress(currentTime, animated: true)
@@ -340,27 +321,27 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
             
             let geoData = (response["geonames"].array)!
-            print("GEODATA: \(geoData)")
+            //print("GEODATA: \(geoData)")
             
             if geoData != [] {
                 let data = (geoData[0].dictionary)!
-                print("DATAAA: \(data)")
+                //print("DATAAA: \(data)")
                 
                 
                 let locationName = (data["name"]?.string)!
-                print("LOCATIONAME: \(locationName)")
+                //print("LOCATIONAME: \(locationName)")
                 
                 
                 if locationName == self.searchTextField.text {
                     
                     let searchLatitude = (data["lat"]?.string)!
-                    print("SEARCHLAT: \(searchLatitude)")
+                    //print("SEARCHLAT: \(searchLatitude)")
                     
                     UserDefaults.standard.set(searchLatitude, forKey: "searchLat")
                     UserDefaults.standard.synchronize()
                     
                     let searchLongitude = (data["lng"]?.string)!
-                    print("SEARCHLNG: \(searchLongitude)")
+                    //print("SEARCHLNG: \(searchLongitude)")
                     UserDefaults.standard.set(searchLongitude, forKey: "searchLng")
                     UserDefaults.standard.synchronize()
                     
@@ -437,7 +418,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         let locValue:CLLocationCoordinate2D = manager.location!.coordinate
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
+        //print("locations = \(locValue.latitude) \(locValue.longitude)")
         
         
         self.getWeatherComponents(latitude: "\(locValue.latitude)", longitude: "\(locValue.longitude)")
@@ -452,30 +433,30 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             
             
             WeatherNetworkManager.getWeather(latitude: latitude, longitude: longitude, success: { (response) in
-                print("Get weather response: \(response)")
+                //print("Get weather response: \(response)")
                 
                 
                 let locationLatitude = (response["latitude"].double)!
-                print("WEATHERLOCATION LATITUDE: \(locationLatitude)")
+                //print("WEATHERLOCATION LATITUDE: \(locationLatitude)")
                 
                 let locationLongitude = (response["longitude"].double)!
-                print("WEATHERLOCATION LONGITUDE: \(locationLongitude)")
+                //print("WEATHERLOCATION LONGITUDE: \(locationLongitude)")
                 
                 
                 WeatherNetworkManager.getLocationName(latitude: locationLatitude, longitude: locationLongitude, success: { (response) in
-                    print("LOCATIONNAMEresponse: \(response)")
+                    //print("LOCATIONNAMEresponse: \(response)")
                     
                     
                     let geoData = (response["geonames"].array)!
-                    print("GEODATA: \(geoData)")
+                    //print("GEODATA: \(geoData)")
                     
                     if geoData != [] {
                         
                         let data = (geoData[0].dictionary)!
-                        print("DATAAA: \(data)")
+                        //print("DATAAA: \(data)")
                         
                         let locationName = (data["name"]?.string)!
-                        print("LOCATIONAME: \(locationName)")
+                        //print("LOCATIONAME: \(locationName)")
                         
                         self.cityLabel.text = locationName
                         
@@ -490,15 +471,15 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                 
                 
                 if let currentlyData = response["currently"].dictionary {
-                    print("Saša's currentlyDATA: \(currentlyData)")
+                    //print("currentlyDATA: \(currentlyData)")
                     
                     let humidityData = (currentlyData["humidity"]?.double)!
-                    //print("saša humidity: \(humidityData)")
+                    //print("humidity: \(humidityData)")
                     self.humidityLabel.text = "\(humidityData)"
                     
                     
                     let iconData = (currentlyData["icon"]?.string)!
-                    print("saša icon: \(iconData)")
+                    //print("icon: \(iconData)")
                     
                     
                     DispatchQueue.main.async {
@@ -548,36 +529,36 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                     }
                     
                     let pressureData = (currentlyData["pressure"]?.double)!
-                    //print("saša pressure: \(pressureData)")
+                    //print("pressure: \(pressureData)")
                     self.pressureLabel.text = "\(pressureData)"
                     
                     self.temperatureLabel.text = WAManager.setTemparature(minTemp: (currentlyData["temperature"]?.double)!)
-                    print("TEMP1: \(self.temperatureLabel.text!)")
+                    //print("TEMP1: \(self.temperatureLabel.text!)")
                     
                     //time
                     let timeData = (currentlyData["time"]?.int)!
-                    //print("saša time: \(timeData)")
+                    //print("time: \(timeData)")
                     self.bodyImageView.image = UIImage(named: "\(timeData)")
                     
                     
                     let windSpeedData = (currentlyData["windSpeed"]?.double)!
-                    //print("saša windSpeed: \(windSpeedData)")
+                    //print("windSpeed: \(windSpeedData)")
                     self.windLabel.text = "\(windSpeedData)"
                     
                     let summaryData = (currentlyData["summary"]?.string)!
-                    print("saša summary: \(summaryData)")
+                    //print("summary: \(summaryData)")
                     self.summaryLabel.text = summaryData
                 }
                 
                 
                 if let dailyData = response["daily"].dictionary {
-                    //print("Saša's dailyDATA: \(dailyData)")
+                    //print("dailyDATA: \(dailyData)")
                     
                     let data = (dailyData["data"]?.array)!
-                    // print("Saša DATA: \(data)")
+                    // print("DATA: \(data)")
                     
                     let dataDict = (data[7].dictionary)!
-                    //print("Saša temperatureMin: \(dataDict)")
+                    //print("temperatureMin: \(dataDict)")
                     
                     
                     self.minimalTemperatureLabel.text = WAManager.setTemparature(minTemp: (dataDict["temperatureMin"]?.double)!)
@@ -678,9 +659,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             windMphLeadingConstraint.constant = 5
         }
     }
-    
-    
-    //////////////////
     
     
     @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {

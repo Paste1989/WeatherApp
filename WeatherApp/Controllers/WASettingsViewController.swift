@@ -89,7 +89,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         self.settingsTableView.delegate = self
         self.settingsTableView.dataSource = self
         
@@ -98,8 +97,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.bodyImageView.image = self.getBodyImage
             self.skyImageView.image = self.getSkyColorImage
         }
-        
-        
         settingsTableView.reloadData()
         
         screenBoundsSettings()
@@ -110,7 +107,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         
         getLocationArray = (SavingDataHelper.getLocation())!
-        print("HUHU: \(getLocationArray)")
+        //print("LOcArray: \(getLocationArray)")
         
         navigationController?.navigationBar.isHidden = true
         
@@ -195,20 +192,20 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             cell.confirmationButton.setImage(checkImage, for: .normal)
             cell.confirmationButton.isEnabled = false
         }
-        
+
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("iindex: \(indexPath.row)")
+        //print("iindex: \(indexPath.row)")
         
         WAHomeViewController.destinationName = (getLocationArray[indexPath.row].placeName!)
         WAHomeViewController.la = (getLocationArray[indexPath.row].latitude)!
         WAHomeViewController.lo = (getLocationArray[indexPath.row].longitude)!
         
         
-        print("L_: \(WAHomeViewController.destinationName), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
+        //print("L_: \(WAHomeViewController.destinationName), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")
         
         
         settingsTableView.reloadData()
@@ -292,6 +289,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    
     @IBAction func windButtonPressed(_ sender: Any) {
         if WASettingsViewController.windPressed == true {
             WASettingsViewController.windPressed = false
@@ -312,6 +310,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
+    
     @IBAction func metricButtonPressed(_ sender: Any) {
         print("metricPressed")
         WASettingsViewController.metricPressed = true
@@ -326,7 +325,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         UserDefaults.standard.set(false, forKey: "imperial")
         UserDefaults.standard.synchronize()
     }
-    
     
     
     @IBAction func imperialButtonPressed(_ sender: Any) {

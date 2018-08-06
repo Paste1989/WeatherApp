@@ -40,11 +40,8 @@ class WASyncManager: NSObject {
                     
                 case .failure(let error):
                     print(error)
-                    
-                    //detecting internet errors, get back error message
                 }
         }
         debugPrint(request)
     }
-    
 }

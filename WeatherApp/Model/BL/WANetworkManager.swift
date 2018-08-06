@@ -12,7 +12,8 @@ import Foundation
 import Alamofire
 import SwiftyJSON
 
-var baseURL: String = "https://api.darksky.net/forecast/a37b2331d675e600a19a4f676c1a538b/" //45.66083,18.41861"
+var baseURL: String = "https://api.darksky.net/forecast/a37b2331d675e600a19a4f676c1a538b/"
+//45.66083,18.41861"
 
 var geoURL: String = "http://api.geonames.org/searchJSON?name_startsWith=#CHANGE#&maxRows=100&username=paste1989"
 

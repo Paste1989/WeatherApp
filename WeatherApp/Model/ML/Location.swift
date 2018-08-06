@@ -15,7 +15,7 @@ class Location: NSObject, NSCoding{
         return lhs.placeName == rhs.placeName && lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
     
-   
+    
     var placeName: String!
     var latitude: Double!
     var longitude: Double!
