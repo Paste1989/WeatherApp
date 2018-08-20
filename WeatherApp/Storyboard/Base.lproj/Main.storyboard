@@ -322,6 +322,17 @@
                                     <constraint firstAttribute="width" constant="150" id="jhA-Hg-Cvl"/>
                                 </constraints>
                             </progressView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fah-fS-gdR">
+                                <rect key="frame" x="310" y="57" width="46" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="46" id="Gpg-iF-9Wp"/>
+                                    <constraint firstAttribute="height" constant="46" id="ZGS-6K-znp"/>
+                                </constraints>
+                                <state key="normal" image="close_icon"/>
+                                <connections>
+                                    <action selector="closeSearchButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m10-Tf-qcU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -347,6 +358,7 @@
                             <constraint firstItem="wMC-zm-Rj7" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="Dxv-5a-YrU"/>
                             <constraint firstItem="9iG-rG-tvG" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="GX4-tg-qna"/>
                             <constraint firstItem="VTc-5J-E0x" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="HUW-Ei-EBd"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Fah-fS-gdR" secondAttribute="trailing" constant="19" id="Hl8-fO-MZF"/>
                             <constraint firstItem="4z0-bB-CkM" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="IMA-fa-sJH"/>
                             <constraint firstItem="mkb-b5-v1V" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="JaH-Wq-C3F"/>
                             <constraint firstItem="aIf-or-STk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="JqC-Q5-IJs"/>
@@ -390,6 +402,7 @@
                             <constraint firstItem="Zqq-Nk-AwE" firstAttribute="top" secondItem="ho9-hk-O3a" secondAttribute="bottom" constant="-3" id="tda-dB-row"/>
                             <constraint firstItem="Et2-2K-CNy" firstAttribute="top" secondItem="Lz0-MZ-TWK" secondAttribute="bottom" constant="2" id="utn-UA-BwE"/>
                             <constraint firstItem="wMC-zm-Rj7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="w17-ZN-a7S"/>
+                            <constraint firstItem="Fah-fS-gdR" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="37" id="yCm-2l-3br"/>
                             <constraint firstItem="WYc-pw-f3D" firstAttribute="leading" secondItem="ul2-dK-Sd7" secondAttribute="trailing" constant="-46" id="z67-Yh-hlg"/>
                             <constraint firstItem="qg3-oZ-O1l" firstAttribute="leading" secondItem="3eq-af-9dZ" secondAttribute="trailing" constant="-11" id="zT2-Gg-Zi8"/>
                         </constraints>
@@ -404,6 +417,7 @@
                         <outlet property="cityLabel" destination="qRO-pA-nUT" id="g78-Cn-JOh"/>
                         <outlet property="cityLabelBottomConstraint" destination="7VC-vC-bpp" id="E9U-oS-dJj"/>
                         <outlet property="cityLabelTopConstraint" destination="box-L9-LMg" id="ibM-yL-qlZ"/>
+                        <outlet property="closeSearchButton" destination="Fah-fS-gdR" id="GyW-G3-xox"/>
                         <outlet property="headerImageHeightConstraint" destination="oeZ-PE-Hvj" id="6Gh-rD-rze"/>
                         <outlet property="headerImageView" destination="yQM-XV-EI3" id="3Jm-kq-oDv"/>
                         <outlet property="highLabel" destination="Zqq-Nk-AwE" id="nBC-bi-9Ci"/>
@@ -786,6 +800,7 @@
     </scenes>
     <resources>
         <image name="checkmark_check" width="24" height="24"/>
+        <image name="close_icon" width="26" height="26"/>
         <image name="humidity_icon" width="40" height="40"/>
         <image name="imageView:aIf-or-STk:image" width="375" height="505">
             <mutableData key="keyedArchiveRepresentation">

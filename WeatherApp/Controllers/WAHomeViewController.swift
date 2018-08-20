@@ -18,6 +18,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     var searchItem: String = ""
     
+    var initaialPlace: String = ""
+
+    
     static var cityName: String!
     static var destinationName: String!
     
@@ -55,6 +58,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     @IBOutlet weak var skyColorImageView: UIImageView!
     
     @IBOutlet weak var searchTableView: UITableView!
+    
+    @IBOutlet weak var closeSearchButton: UIButton!
+    
     
     
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -156,8 +162,6 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         
         searchTextField.addTarget(self, action: #selector(self.textChanged(sender:)),for: UIControlEvents.editingChanged)
         
-        
-        
         self.searchTableView.allowsSelection = true
         
         let metric = UserDefaults.standard.bool(forKey: "metric")
@@ -176,6 +180,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         searchTableView.isHidden = true
         blurEfectView.isHidden = true
         searchProgressView.isHidden = true
+        closeSearchButton.isHidden = true
         
         
         searchTextField.addImage(direction: .Right, imageName: "search_icon", frame: CGRect(x: -20, y: 0, width: 20, height: 20), backgroundColor: .clear)
@@ -225,15 +230,14 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             getWeatherComponents(latitude: lat!, longitude: lng!)
         }
         
-        if WAHomeViewController.destinationName != nil && WAHomeViewController.la != 0.0 {
-            
-            cityLabel.text = (WAHomeViewController.destinationName)!
-            let la = (WAHomeViewController.la)
-            let lo = (WAHomeViewController.lo)
-            //print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
-            
-            getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
-        }
+
+        cityLabel.text = initaialPlace
+        let la = (WAHomeViewController.la)
+        let lo = (WAHomeViewController.lo)
+        print("DIDAPPEAR: \(WAHomeViewController.destinationName), \(la), \(lo)")
+        
+        getWeatherComponents(latitude: "\(la)", longitude: "\(lo)")
+
         
         screenBoundsSettings()
     }
@@ -313,12 +317,11 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
     
     
     @objc func textChanged(sender:UITextField) {
-        searchProgressView.isHidden = false
-        searchProgressView.setProgress(currentTime, animated: true)
-        perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
-        
-        
         WeatherNetworkManager.searchLocation(name_startsWith: searchTextField.text!, success: { (response) in
+            
+            self.searchProgressView.isHidden = false
+            self.searchProgressView.setProgress(self.currentTime, animated: true)
+            self.perform(#selector(self.updateProgress), with: nil, afterDelay: 1.0)
             
             let geoData = (response["geonames"].array)!
             //print("GEODATA: \(geoData)")
@@ -371,6 +374,8 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
             searchVCLocationsToShow.removeAll()
         }
         
+        searchProgressView.isHidden = true
+        
         self.searchTableView.reloadData()
     }
     
@@ -382,6 +387,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         leadingSearchTextFieldConstraint.constant = 20
         trailingSearchTextFieldConstraint.constant = 20
         settingsButton.isHidden = true
+        closeSearchButton.isHidden = false
         
         searchTableView.reloadData()
         
@@ -396,6 +402,7 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         leadingSearchTextFieldConstraint.constant = 74
         trailingSearchTextFieldConstraint.constant = 73
         settingsButton.isHidden = false
+        closeSearchButton.isHidden = true
         
         searchTextField.text = ""
         
@@ -460,6 +467,9 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
                         
                         self.cityLabel.text = locationName
                         
+                        self.initaialPlace = locationName
+                        //print("INITIAL: \(self.initaialPlace)")
+
                     }else {
                         
                     }
@@ -672,12 +682,13 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         currentTime = currentTime + 1.0
         searchProgressView.progress = currentTime/maxTime
         
+        
         if currentTime < maxTime {
             perform(#selector(updateProgress), with: nil, afterDelay: 1.0)
         }
         else if currentTime == maxTime{
             print("Stop")
-            
+        
             searchProgressView.layer.removeAllAnimations()
             searchProgressView.isHidden = true
             currentTime = 0.0
@@ -693,7 +704,17 @@ class WAHomeViewController: UIViewController, UITextFieldDelegate, UITableViewDe
         searchTableView.reloadData()
         
     }
+    
+    
+    @IBAction func closeSearchButtonPressed(_ sender: Any) {
+        searchProgressView.isHidden = true
+        textFieldDidEndEditing(self.searchTextField)
+        searchTextField.resignFirstResponder()
+        searchTableView.reloadData()
+    }
 }
+
+
 
 
 
