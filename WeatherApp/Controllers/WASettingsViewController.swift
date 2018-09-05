@@ -17,10 +17,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var weather = [Weather]()
     
-    var getHeaderImage: UIImage!
-    var getBodyImage: UIImage!
-    var getSkyColorImage: UIImage!
-    
     var humidityData: Double = 0.0
     var iconData: String = ""
     var pressureData: Double = 0.0
@@ -32,6 +28,9 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     var minTempData: String = ""
     var maxTempData: String = ""
     
+    var getHeaderImage: UIImage!
+    var getBodyImage: UIImage!
+    var getSkyColorImage: UIImage!
     
     weak var delegate : WASettingsViewControllerDelegate?
     
@@ -97,6 +96,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.bodyImageView.image = self.getBodyImage
             self.skyImageView.image = self.getSkyColorImage
         }
+        
         settingsTableView.reloadData()
         
         screenBoundsSettings()
@@ -187,7 +187,7 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
         
         cell.locationLabel.text = (getLocationArray[indexPath.row].placeName)!
         
-        if cell.locationLabel.text == WAHomeViewController.cityName {
+        if cell.locationLabel.text == WASearchViewController.cityName {
             let checkImage = UIImage(named: "square_checkmark_check")
             cell.confirmationButton.setImage(checkImage, for: .normal)
             cell.confirmationButton.isEnabled = false
@@ -200,9 +200,9 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print("iindex: \(indexPath.row)")
         
-        WAHomeViewController.destinationName = (getLocationArray[indexPath.row].placeName!)
-        WAHomeViewController.la = (getLocationArray[indexPath.row].latitude)!
-        WAHomeViewController.lo = (getLocationArray[indexPath.row].longitude)!
+        WASearchViewController.destinationName = (getLocationArray[indexPath.row].placeName!)
+        WASearchViewController.la = (getLocationArray[indexPath.row].latitude)!
+        WASearchViewController.lo = (getLocationArray[indexPath.row].longitude)!
         
         
         //print("L_: \(WAHomeViewController.destinationName), LA_ \(WAHomeViewController.la), LN_ \( WAHomeViewController.lo)")

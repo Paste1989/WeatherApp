@@ -13,7 +13,7 @@
 		271C542120F7AB0F00F8940F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271C542020F7AB0F00F8940F /* Location.swift */; };
 		272CA13E21089CA0009C26B7 /* SavingDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 272CA13D21089CA0009C26B7 /* SavingDataHelper.swift */; };
 		2746D85B20EF677500423A46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D85A20EF677500423A46 /* AppDelegate.swift */; };
-		2746D85D20EF677500423A46 /* WAHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D85C20EF677500423A46 /* WAHomeViewController.swift */; };
+		2746D85D20EF677500423A46 /* WASearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D85C20EF677500423A46 /* WASearchViewController.swift */; };
 		2746D86020EF677500423A46 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2746D85E20EF677500423A46 /* Main.storyboard */; };
 		2746D86320EF677500423A46 /* WeatherApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2746D86120EF677500423A46 /* WeatherApp.xcdatamodeld */; };
 		2746D86520EF677600423A46 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2746D86420EF677600423A46 /* Assets.xcassets */; };
@@ -25,6 +25,7 @@
 		2756D58720EF8FA20036FA92 /* WAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58620EF8FA20036FA92 /* WAManager.swift */; };
 		2756D58920EFA0750036FA92 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2756D58820EFA0750036FA92 /* Weather.swift */; };
 		277688AE20F0DF9B00E14298 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */; };
+		277E47FD213EB9AB00D5DE4C /* WAHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277E47FC213EB9AB00D5DE4C /* WAHomeViewController.swift */; };
 		27DB78A620F3734600AA3617 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */; };
 		27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DB78A720F3E03F00AA3617 /* Extensions.swift */; };
 		27FABC8C2111A49400B87217 /* Gotham Rounded Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 27FABC8A2111A49300B87217 /* Gotham Rounded Light.otf */; };
@@ -59,7 +60,7 @@
 		272CA13D21089CA0009C26B7 /* SavingDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataHelper.swift; sourceTree = "<group>"; };
 		2746D85720EF677500423A46 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2746D85A20EF677500423A46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2746D85C20EF677500423A46 /* WAHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAHomeViewController.swift; sourceTree = "<group>"; };
+		2746D85C20EF677500423A46 /* WASearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WASearchViewController.swift; sourceTree = "<group>"; };
 		2746D85F20EF677500423A46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2746D86220EF677500423A46 /* WeatherApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = WeatherApp.xcdatamodel; sourceTree = "<group>"; };
 		2746D86420EF677600423A46 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -76,6 +77,7 @@
 		2756D58620EF8FA20036FA92 /* WAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAManager.swift; sourceTree = "<group>"; };
 		2756D58820EFA0750036FA92 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		277688AD20F0DF9B00E14298 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
+		277E47FC213EB9AB00D5DE4C /* WAHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAHomeViewController.swift; sourceTree = "<group>"; };
 		27DB78A520F3734600AA3617 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		27DB78A720F3E03F00AA3617 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		27FABC8A2111A49300B87217 /* Gotham Rounded Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham Rounded Light.otf"; sourceTree = "<group>"; };
@@ -185,7 +187,8 @@
 		2746D88B20EF67EA00423A46 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				2746D85C20EF677500423A46 /* WAHomeViewController.swift */,
+				277E47FC213EB9AB00D5DE4C /* WAHomeViewController.swift */,
+				2746D85C20EF677500423A46 /* WASearchViewController.swift */,
 				2746D88E20EF686700423A46 /* WASettingsViewController.swift */,
 			);
 			path = Controllers;
@@ -526,8 +529,9 @@
 				2746D88F20EF686700423A46 /* WASettingsViewController.swift in Sources */,
 				2746D86320EF677500423A46 /* WeatherApp.xcdatamodeld in Sources */,
 				271C542120F7AB0F00F8940F /* Location.swift in Sources */,
+				277E47FD213EB9AB00D5DE4C /* WAHomeViewController.swift in Sources */,
 				271B085B2109240600E82CF3 /* WATextField.swift in Sources */,
-				2746D85D20EF677500423A46 /* WAHomeViewController.swift in Sources */,
+				2746D85D20EF677500423A46 /* WASearchViewController.swift in Sources */,
 				277688AE20F0DF9B00E14298 /* SearchTableViewCell.swift in Sources */,
 				27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */,
 				2756D58720EF8FA20036FA92 /* WAManager.swift in Sources */,
