@@ -115,12 +115,31 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBOutlet weak var settingsButton: UIButton!
     
+    
+    
+    @IBOutlet weak var headerImageHeightConstraint: NSLayoutConstraint!
 
+    @IBOutlet weak var bodyImageHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var searchTextFieldTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var temperatureLabelTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var summaryLabelTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var locationLabelTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var windTopConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var humidityLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var pressureTrailingConstraint: NSLayoutConstraint!
+    
+    
+    
     let locationManager = CLLocationManager()
 
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        screenBoundsSettings()
 
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -482,6 +501,63 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
             settingsVC.delegate = self
         }
     }
+    
+    
+    func screenBoundsSettings(){
+        if UIScreen.main.bounds.height == 568 {
+            
+ temperatureLabelTopConstraint.constant = 30
+            
+            summaryLabelTopConstraint.constant = -30
+            locationLabelTopConstraint.constant = -40
+            
+            viewTopConstraint.constant = 20
+            
+            searchTextFieldTopConstraint.constant = 40
+            
+            humidityLeadingConstraint.constant = -70
+            pressureTrailingConstraint.constant = -70
+            
+            
+            
+            temperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 70) as Any as! UIFont
+            
+            summaryLabel.font = UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            
+            
+            cityLabel.font = UIFont.init(name: "GothamRounded-Book", size: 36) as Any as! UIFont
+            
+            
+            minimalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            maximalTemperatureLabel.font =  UIFont.init(name: "GothamRounded-Light", size: 24) as Any as! UIFont
+            lowlabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            highLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            
+            humidityPercentageLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            windMphLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+            pressureHpaLabel.font = UIFont.init(name: "GothamRounded-Light", size: 20) as Any as! UIFont
+   
+        }
+        else if UIScreen.main.bounds.height == 667 {
+
+        }
+        else if UIScreen.main.bounds.height == 736 {
+
+        }
+        else if UIScreen.main.bounds.height == 812 {
+
+            temperatureLabelTopConstraint.constant = 80
+            locationLabelTopConstraint.constant = 120
+           viewTopConstraint.constant = 50
+            searchTextFieldTopConstraint.constant = 80
+        }
+    }
+    
+    
 
     
     
