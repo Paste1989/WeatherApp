@@ -270,6 +270,8 @@ class WASearchViewController: UIViewController, UITextFieldDelegate, UITableView
             windMphLabel.isHidden = false
         }
         self.searchTableView.reloadData()
+        
+        self.skyColorImageView.layer.configureGradientBackground(UIColor(hex: 0x59B7E0).cgColor, UIColor(hex: 0xD8D8D8).cgColor)
     }
     
     

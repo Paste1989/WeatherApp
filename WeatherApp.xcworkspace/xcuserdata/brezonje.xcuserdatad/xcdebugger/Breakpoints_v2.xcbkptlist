@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeatherApp/Controllers/WASearchViewController.swift"
-            timestampString = "558282404.810179"
+            timestampString = "560767123.889647"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "657"
-            endingLineNumber = "657"
+            startingLineNumber = "659"
+            endingLineNumber = "659"
             landmarkName = "getWeatherComponents(latitude:longitude:)"
             landmarkType = "7">
          </BreakpointContent>
