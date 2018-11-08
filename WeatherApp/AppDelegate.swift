@@ -33,8 +33,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         WASettingsViewController.pressurePressed = true
         UserDefaults.standard.set(true, forKey: "pressure")
-        
-        
 
         WASettingsViewController.metricPressed = true
         UserDefaults.standard.set(true, forKey: "metric")
@@ -112,6 +110,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
 }
 

@@ -32,6 +32,7 @@ class SavingDataHelper {
         UserDefaults.standard.synchronize()
     }
     
+    
     class func saveData(name: [String]){
         let nameData = NSKeyedArchiver.archivedData(withRootObject: name)
         UserDefaults.standard.set(nameData, forKey: "locationArray")
@@ -47,6 +48,7 @@ class SavingDataHelper {
         }
         return [String]()
     }
+    
     
     class func saveString(name: String){
         let nameData = NSKeyedArchiver.archivedData(withRootObject: name)

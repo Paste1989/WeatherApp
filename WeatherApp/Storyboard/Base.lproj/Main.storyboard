@@ -199,6 +199,19 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="OGF-tv-3fr">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="al9-pP-HBK">
+                                            <rect key="frame" x="167.5" y="528" width="40" height="49"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="49" id="9pv-Gr-5Ml"/>
+                                                <constraint firstAttribute="width" constant="40" id="G2w-HU-G0J"/>
+                                            </constraints>
+                                            <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="al9-pP-HBK" firstAttribute="centerX" secondItem="OGF-tv-3fr" secondAttribute="centerX" id="GbF-XD-b7s"/>
+                                    </constraints>
                                 </view>
                                 <blurEffect style="light"/>
                             </visualEffectView>
@@ -312,13 +325,6 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="L2a-8z-Z8y">
-                                <rect key="frame" x="113" y="273" width="150" height="2"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="jSV-YD-cur"/>
-                                    <constraint firstAttribute="width" constant="150" id="jhA-Hg-Cvl"/>
-                                </constraints>
-                            </progressView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fah-fS-gdR">
                                 <rect key="frame" x="310" y="57" width="46" height="46"/>
                                 <constraints>
@@ -376,6 +382,7 @@
                             <constraint firstItem="8ne-MK-Hnu" firstAttribute="top" secondItem="cU5-Xi-NR6" secondAttribute="bottom" constant="31" id="Wgc-gC-BaB"/>
                             <constraint firstItem="qRO-pA-nUT" firstAttribute="top" secondItem="mkb-b5-v1V" secondAttribute="bottom" constant="8" id="XGU-Cn-H9R"/>
                             <constraint firstItem="Zqq-Nk-AwE" firstAttribute="leading" secondItem="cU5-Xi-NR6" secondAttribute="trailing" constant="46" id="Y1b-cK-VcO"/>
+                            <constraint firstItem="T6m-xi-AV4" firstAttribute="top" secondItem="al9-pP-HBK" secondAttribute="bottom" constant="20" id="Y3N-na-iO6"/>
                             <constraint firstItem="wMC-zm-Rj7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="YRr-Zv-kHW"/>
                             <constraint firstItem="9iG-rG-tvG" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Yc9-lH-Xxy"/>
                             <constraint firstItem="cU5-Xi-NR6" firstAttribute="leading" secondItem="PHJ-mI-Kca" secondAttribute="trailing" constant="46" id="ZKv-FT-Jcd"/>
@@ -387,7 +394,6 @@
                             <constraint firstItem="4z0-bB-CkM" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fsQ-Gh-BxF"/>
                             <constraint firstItem="yQM-XV-EI3" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="-20" id="gOK-kl-Cgo"/>
                             <constraint firstItem="qg3-oZ-O1l" firstAttribute="centerY" secondItem="3eq-af-9dZ" secondAttribute="centerY" id="gtD-fG-vm3"/>
-                            <constraint firstItem="L2a-8z-Z8y" firstAttribute="top" secondItem="yQM-XV-EI3" secondAttribute="bottom" constant="20" id="haI-xb-5Z2"/>
                             <constraint firstItem="4z0-bB-CkM" firstAttribute="top" secondItem="qRO-pA-nUT" secondAttribute="bottom" constant="65" id="ix5-Ym-tWS"/>
                             <constraint firstItem="Lz0-MZ-TWK" firstAttribute="leading" secondItem="Et2-2K-CNy" secondAttribute="trailing" constant="-27" id="jJS-If-QEx"/>
                             <constraint firstItem="Am5-bu-rES" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mHD-8K-rxH"/>
@@ -395,7 +401,6 @@
                             <constraint firstItem="Am5-bu-rES" firstAttribute="top" secondItem="yQM-XV-EI3" secondAttribute="bottom" constant="-117" id="oFf-UD-KDZ"/>
                             <constraint firstItem="mkb-b5-v1V" firstAttribute="leading" secondItem="yQM-XV-EI3" secondAttribute="leading" id="pMZ-bL-Qg7"/>
                             <constraint firstItem="3eq-af-9dZ" firstAttribute="top" secondItem="8ne-MK-Hnu" secondAttribute="bottom" constant="2" id="rz7-CJ-DuS"/>
-                            <constraint firstItem="L2a-8z-Z8y" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="tNw-Tf-RRs"/>
                             <constraint firstItem="Zqq-Nk-AwE" firstAttribute="top" secondItem="ho9-hk-O3a" secondAttribute="bottom" constant="-3" id="tda-dB-row"/>
                             <constraint firstItem="Et2-2K-CNy" firstAttribute="top" secondItem="Lz0-MZ-TWK" secondAttribute="bottom" constant="2" id="utn-UA-BwE"/>
                             <constraint firstItem="wMC-zm-Rj7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="w17-ZN-a7S"/>
@@ -408,6 +413,7 @@
                     <navigationItem key="navigationItem" id="ecO-JQ-4an"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="al9-pP-HBK" id="Sr2-vr-8fw"/>
                         <outlet property="blurEfectView" destination="wMC-zm-Rj7" id="x2s-bO-gJQ"/>
                         <outlet property="bodyImageHeightConstraint" destination="qH7-YK-zdb" id="ubJ-nk-R77"/>
                         <outlet property="bodyImageView" destination="aIf-or-STk" id="fQ5-Nv-svc"/>
@@ -437,7 +443,6 @@
                         <outlet property="pressureLeadingConstraint" destination="WPf-gC-wME" id="dfk-aP-YFt"/>
                         <outlet property="pressureWidthConstraint" destination="MGU-zc-6Cj" id="8Ka-2V-MED"/>
                         <outlet property="scrollViewTopConstraint" destination="mel-oT-aai" id="gOy-1s-tb5"/>
-                        <outlet property="searchProgressView" destination="L2a-8z-Z8y" id="UCh-ss-Og3"/>
                         <outlet property="searchScrollView" destination="Zdk-aI-fu7" id="5Bd-7x-TLL"/>
                         <outlet property="searchTableView" destination="9iG-rG-tvG" id="llB-Rk-aGi"/>
                         <outlet property="searchTableViewHeightConstraint" destination="71j-0F-JhU" id="QZ0-Ra-UyO"/>

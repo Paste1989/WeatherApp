@@ -17,18 +17,14 @@ class WASyncManager: NSObject {
     
     class func request(url: String, method: HTTPMethod, parameters: Parameters?, header: HTTPHeaders?, success: @escaping (JSON)->(), failure: @escaping (Error)->()){
         
-        
         let request = Alamofire.request(url, method: method, parameters: parameters, encoding: JSONEncoding.default)
+            
             .responseJSON { response in
                 switch response.result{
+                    
                 case .success(let value):
-                    
-                    //print("Did get data from server. Data is:\n\(JSON(value))")
-                    
                     let json = JSON(value)
-                    
                     if (response.response?.statusCode)! >= 200 && (response.response?.statusCode)! < 400 {
-                        
                         success(json)
                     }
                     else {
@@ -39,7 +35,7 @@ class WASyncManager: NSObject {
                     }
                     
                 case .failure(let error):
-                    print(error)
+                    print(error.localizedDescription)
                 }
         }
         debugPrint(request)

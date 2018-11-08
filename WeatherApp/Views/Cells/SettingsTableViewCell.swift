@@ -15,8 +15,7 @@ class SettingsTableViewCell: UITableViewCell {
     //MARK: - Outlets
     @IBOutlet weak var confirmationButton: UIButton!
     @IBOutlet weak var locationLabel: UILabel!
-    
-    
+
     
     //MARK: - LifeCycle
     override func awakeFromNib() {
@@ -46,5 +45,4 @@ class SettingsTableViewCell: UITableViewCell {
             confirmationButton.setImage(checkImage, for: .normal)
         }
     }
-    
 }

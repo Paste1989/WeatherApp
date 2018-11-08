@@ -13,10 +13,7 @@ import Alamofire
 import SwiftyJSON
 
 var baseURL: String = "https://api.darksky.net/forecast/a37b2331d675e600a19a4f676c1a538b/"
-//45.66083,18.41861"
-
 var geoURL: String = "http://api.geonames.org/searchJSON?name_startsWith=#CHANGE#&maxRows=100&username=paste1989"
-
 var geoLocationURLbase: String = "http://api.geonames.org/findNearbyPlaceNameJSON?lat=#CHANGE1#&lng=#CHANGE2#&username=paste1989"
 
 
@@ -26,7 +23,6 @@ struct WeatherNetworkManager {
         let headers: HTTPHeaders = [
             "Accept": "application/json"
         ]
-        
         
         WASyncManager.request(url: baseURL+"\(latitude),\(longitude)", method: .get, parameters: nil, header: headers, success: { (response) in
             success(response)

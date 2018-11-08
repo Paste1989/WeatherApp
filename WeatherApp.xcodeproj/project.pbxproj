@@ -12,6 +12,7 @@
 		271B085B2109240600E82CF3 /* WATextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271B085A2109240600E82CF3 /* WATextField.swift */; };
 		271C542120F7AB0F00F8940F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271C542020F7AB0F00F8940F /* Location.swift */; };
 		272CA13E21089CA0009C26B7 /* SavingDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 272CA13D21089CA0009C26B7 /* SavingDataHelper.swift */; };
+		27388AF721945D3800841CC7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27388AF621945D3800841CC7 /* Constants.swift */; };
 		2746D85B20EF677500423A46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D85A20EF677500423A46 /* AppDelegate.swift */; };
 		2746D85D20EF677500423A46 /* WASearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2746D85C20EF677500423A46 /* WASearchViewController.swift */; };
 		2746D86020EF677500423A46 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2746D85E20EF677500423A46 /* Main.storyboard */; };
@@ -58,6 +59,7 @@
 		271B085A2109240600E82CF3 /* WATextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WATextField.swift; sourceTree = "<group>"; };
 		271C542020F7AB0F00F8940F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		272CA13D21089CA0009C26B7 /* SavingDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingDataHelper.swift; sourceTree = "<group>"; };
+		27388AF621945D3800841CC7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2746D85720EF677500423A46 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2746D85A20EF677500423A46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2746D85C20EF677500423A46 /* WASearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WASearchViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 		270138B320EF7D100029B607 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				27388AF621945D3800841CC7 /* Constants.swift */,
 				27DB78A720F3E03F00AA3617 /* Extensions.swift */,
 			);
 			path = Utils;
@@ -225,8 +228,8 @@
 		2746D89320EF7B0300423A46 /* BL */ = {
 			isa = PBXGroup;
 			children = (
-				2756D58620EF8FA20036FA92 /* WAManager.swift */,
 				2756D58420EF8F0B0036FA92 /* WANetworkManager.swift */,
+				2756D58620EF8FA20036FA92 /* WAManager.swift */,
 			);
 			path = BL;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				271C542120F7AB0F00F8940F /* Location.swift in Sources */,
 				277E47FD213EB9AB00D5DE4C /* WAHomeViewController.swift in Sources */,
 				271B085B2109240600E82CF3 /* WATextField.swift in Sources */,
+				27388AF721945D3800841CC7 /* Constants.swift in Sources */,
 				2746D85D20EF677500423A46 /* WASearchViewController.swift in Sources */,
 				277688AE20F0DF9B00E14298 /* SearchTableViewCell.swift in Sources */,
 				27DB78A820F3E03F00AA3617 /* Extensions.swift in Sources */,
