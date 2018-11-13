@@ -18,7 +18,7 @@ var geoLocationURLbase: String = "http://api.geonames.org/findNearbyPlaceNameJSO
 
 
 struct WeatherNetworkManager {
-    
+
     static func getWeather(latitude: String, longitude: String, success: @escaping (JSON) -> Void, failure: @escaping(Error) -> Void) {
         let headers: HTTPHeaders = [
             "Accept": "application/json"

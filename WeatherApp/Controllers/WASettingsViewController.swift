@@ -120,7 +120,6 @@ class WASettingsViewController: UIViewController, UITableViewDelegate, UITableVi
             cell.confirmationButton.setImage(checkImage, for: .normal)
             cell.confirmationButton.isEnabled = false
         }
-
         return cell
     }
     

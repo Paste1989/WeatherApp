@@ -69,16 +69,13 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var settingsButton: UIButton!
     
     @IBOutlet weak var headerImageHeightConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var bodyImageHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchTextFieldTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var temperatureLabelTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var summaryLabelTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var locationLabelTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var viewTopConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var windTopConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var humidityLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var pressureTrailingConstraint: NSLayoutConstraint!
     
@@ -120,12 +117,12 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        //        let lat = UserDefaults.standard.string(forKey: "searchLat")
-        //        let lng = UserDefaults.standard.string(forKey: "searchLng")
-        //        if lat != nil && lng != nil {
-        //            getWeatherComponents(latitude: lat!, longitude: lng!)
-        //            cityLabel.text = WAHomeViewController.cityName
-        //        }
+//                let lat = UserDefaults.standard.string(forKey: "searchLat")
+//                let lng = UserDefaults.standard.string(forKey: "searchLng")
+//                if lat != nil && lng != nil {
+//                    getWeatherComponents(latitude: lat!, longitude: lng!)
+//                    cityLabel.text = WAHomeViewController.cityName
+//                }
         
         
         let la = (WASearchViewController.la)
@@ -285,7 +282,6 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
                         let timeData = (currentlyData["time"]?.int)!
                         self.bodyImageView.image = UIImage(named: "\(timeData)")
                         
-                        
                         let windSpeedData = (currentlyData["windSpeed"]?.double)!
                         self.windLabel.text = "\(windSpeedData)"
                         
@@ -293,9 +289,7 @@ class WAHomeViewController: UIViewController, CLLocationManagerDelegate {
                         self.summaryLabel.text = summaryData
                     }
                     
-                    
                     if let dailyData = response["daily"].dictionary {
-                        
                         let data = (dailyData["data"]?.array)!
                         let dataDict = (data[7].dictionary)!
                         

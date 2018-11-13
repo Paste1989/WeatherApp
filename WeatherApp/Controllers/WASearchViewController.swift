@@ -299,8 +299,8 @@ class WASearchViewController: UIViewController, UITextFieldDelegate, UITableView
         dismiss(animated: true, completion: nil)
     }
     
-    func getWeatherComponents(latitude:String, longitude:String){
-        if Reachability.isConnectedToNetwork(){
+    func getWeatherComponents(latitude:String, longitude:String) {
+        if Reachability.isConnectedToNetwork() {
             print("Internet Connection Available!")
             
             WeatherNetworkManager.getWeather(latitude: latitude, longitude: longitude, success: { (response) in
@@ -320,7 +320,6 @@ class WASearchViewController: UIViewController, UITextFieldDelegate, UITableView
                 }, failure: { (error) in
                     print(error.localizedDescription)
                 })
-                
                 
                 if let currentlyData = response["currently"].dictionary {
                     let humidityData = (currentlyData["humidity"]?.double)!

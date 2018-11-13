@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import SwiftyJSON
 
-class Location: NSObject, NSCoding{
+class Location: NSObject, NSCoding {
     static func == (lhs: Location, rhs: Location) -> Bool {
         return lhs.placeName == rhs.placeName && lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
@@ -20,7 +20,7 @@ class Location: NSObject, NSCoding{
     var latitude: Double!
     var longitude: Double!
     
-    enum Key:String {
+    enum Key: String {
         case placeName = "placeName"
         case latitude = "latitude"
         case longitude = "longitude"
